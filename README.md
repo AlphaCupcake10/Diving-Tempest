@@ -1,26 +1,28 @@
-# Project DeepDive
+# Project Diving Tempest
+
+## Story
+You are a spec-ops commander who just returned to his country, Patria Mea, after 5 years. Thinking you would spend the rest of your life with your family, but you weren't aware that everything has changed. As you arrived, you saw people with weird skin colors walking in a weird manner, which you couldn't understand until your wife was bitten and turned into an aegrotus (infected person).
+
+You had no choice, you decapacitate her. you feel empty and dead inside
+
+Then you ran for your life and were in hiding for almost 5 days until you realized escaping wasn't possible as they were multiplying day by day and were even spreading to other countries, so you think only had one way: either do or die, so you decided you would escape no more. You did some research to find about the source of the aegrotus virus. 
+
+Eureka! you found the origin, It was a Deep Underground Science Facility. You head out to finish it once and for all to seek revenge for your wife
 
 ## General Idea
-There is a building which is only 1 floor above the ground but many floors below the ground and its postapocalypse time and there's one last guy(scientist) alive.
-He goes into the building and fights monsters(zombies) and switches between times (past and present) to move down deep into the earth till the final boss.
-On the way he also finds fragments of his old memories and he realizes what happened in the past and how to defeat the final boss.
+Facility only has 1 floor above the ground and unknown number of floors below the ground.
+As the player Dives Deeper, things get weirder and weirder, reality as you know it shatters. 
 
-## Gameplay Idea
+## Gameplay
 ### Movement/Shooting mechanics
-- The player can only shoot in the direction they are looking towards i.e if they are facing left then they can shoot only left if they are facing right then they can only shoot right.
-- Player will find new and better weapons on different levels as the story unfolds
-- Player can shoot in 3 different trajectories in whatever direction he is facing. <br>
-![image](https://github.com/AlphaCupcake10/Project_DeepDive/assets/79973672/c0498471-8e9a-4b2d-9ce7-f30505b1931d)
-- Player can jump, shoot, walk and run.
-
-### Levels
-- Each level can be finished by either solving it in the past by puzzles or fighting the zombies in the present.
-- After a few levels there can be a resting level where the player can see some past memories and also pet a stray cat over there.
-- For weapons some weapons can drop from zombies, some just show up after solving a puzzle in the past, some are destined to be found in the resting levels.
-- Player doesnot have to have all the weapons to defeat the final boss
+- The Player has basic Movement & Jump.
+- The Player can also Crouch, and if with enough velocity Slide.
+- The Player can follow the Slide with a powerful SlideJump.
+- The Guns has various other mechanics other than just shooting.
+- Like Shotgun Jump, Gravity Gun, ~Think of More~
+- More Core Mechanics to Implement,
+- Like 2-Way Time Travel (TitanFall2).
 
 ## ArtStyle
 - The entire game will be in pixel art style
 - Present will be overgrown apocalyptic style
-- Past will be scifi style
-- Background can have parallax effects too
