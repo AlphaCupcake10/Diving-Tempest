@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
-  m_Name: BG
+  m_Name: BGTile
   m_EditorClassIdentifier: 
   m_DefaultSprite: {fileID: 21300000, guid: 38bf5c1776de6034eb3be1d2e8ecfaab, type: 3}
   m_DefaultGameObject: {fileID: 0}
