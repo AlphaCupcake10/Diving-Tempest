@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
-        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.Angle),SlerpFactor);
+        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.GetGravityAngle()),SlerpFactor);
         
         if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
 

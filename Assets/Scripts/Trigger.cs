@@ -6,9 +6,9 @@ using UnityEngine.Events;
 public class Trigger : MonoBehaviour
 {
     public UnityEvent onStart;
-    public UnityEvent onTriggerEnter;
-    public UnityEvent onTriggerExit;
+    public UnityEvent<Collider2D> onTriggerEnter,onTriggerExit;
     public bool DisableRenderer = true;
+    public LayerMask Mask;
 
     void Start()
     {  
@@ -19,11 +19,16 @@ public class Trigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        onTriggerEnter.Invoke();
+        if(( Mask & (1 << col.gameObject.layer)) != 0)
+        {
+            onTriggerEnter.Invoke(col);
+        }
     }
     void OnTriggerExit2D(Collider2D col)
     {
-        onTriggerExit.Invoke();
+        if(( Mask & (1 << col.gameObject.layer)) != 0)
+        {
+            onTriggerExit.Invoke(col);
+        }
     }
-
 }

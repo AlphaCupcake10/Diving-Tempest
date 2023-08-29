@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2542948206535393419}
   - component: {fileID: 4687063106956295607}
   - component: {fileID: 3662345375642443968}
+  - component: {fileID: 3720912174470004187}
   m_Layer: 7
   m_Name: Trigger
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 3.1928022, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -145,23 +146,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onStart:
     m_PersistentCalls:
+      m_Calls: []
+  onTriggerEnter:
+    m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2542948206535393419}
-        m_TargetAssemblyTypeName: UnityEngine.SpriteRenderer, UnityEngine
-        m_MethodName: set_sprite
-        m_Mode: 2
+      - m_Target: {fileID: 3720912174470004187}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Sprite, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0
+          m_FloatArgument: 90
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onTriggerEnter:
-    m_PersistentCalls:
-      m_Calls: []
   onTriggerExit:
     m_PersistentCalls:
       m_Calls: []
   DisableRenderer: 1
+  Mask:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &3720912174470004187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4323063770650633223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcda50a55906d02449003781558be4c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_object: []
+  m_floats: []
+  m_vector3: []

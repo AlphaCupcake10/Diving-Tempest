@@ -5,7 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Gravity : MonoBehaviour
 {
-    public float Angle;
+    [SerializeField]
+    float Angle;
     Rigidbody2D RB;
     float defaultGravityScale = 1;
     void Start()
@@ -20,11 +21,14 @@ public class Gravity : MonoBehaviour
     {
         Angle = val;
     }
+    public float GetGravityAngle()
+    {
+        return Angle;
+    }
     public Rigidbody2D GetRB()
     {
         return RB;
     }
-    
     void onDisable()
     {
         GravityManager.Instance.RemoveEntity(this);

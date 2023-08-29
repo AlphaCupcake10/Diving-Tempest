@@ -21,13 +21,14 @@ public class GravityManager : MonoBehaviour
     {
         Entities.Remove(gravity);
     }
-
+    
     void FixedUpdate()
     {
         foreach (Gravity Entity in Entities)
         {
             Rigidbody2D RB = Entity.GetRB();
-            RB.AddForce(new Vector2(Mathf.Cos((GlobalAngle+Entity.Angle+90)*Mathf.Deg2Rad),Mathf.Sin((GlobalAngle+Entity.Angle+90)*Mathf.Deg2Rad))*RB.mass*Physics2D.gravity.y);
+            float Angle = (GlobalAngle+Entity.GetGravityAngle()+90)*Mathf.Deg2Rad;
+            RB.AddForce(new Vector2(Mathf.Cos(Angle),Mathf.Sin(Angle))*RB.mass*Physics2D.gravity.y);
         }
     }
     
