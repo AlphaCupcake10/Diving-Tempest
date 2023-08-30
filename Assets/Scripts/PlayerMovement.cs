@@ -1,29 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using Cinemachine;
 
+[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(CharacterController2D))]
 public class PlayerMovement : MonoBehaviour
 {
     //References
     public Animator animator;
     CharacterController2D controller;    
+    PlayerInput input;
     Gravity gravity;
 
     [Header("Camera")]
     public CinemachineVirtualCamera vcam;
     [Range(0,1)]public float SlerpFactor = 0.5f; 
 
-
-    // STATE VARS
-    bool _InputJump;
-    bool _InputCrouch;
-    Vector2 _InputAxis;
+    public AnimatorOverrideController[] controllers;
 
 
     void Start()
     {
+        input = GetComponent<PlayerInput>();
         controller = GetComponent<CharacterController2D>();
         gravity = GetComponent<Gravity>();
     }
@@ -33,25 +33,38 @@ public class PlayerMovement : MonoBehaviour
         
         if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
 
-        GetInput();
+        controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch);
+
         if(animator)UpdateAnimations();
     }
-    void GetInput()
-    {
-        _InputJump = Input.GetButton("Jump");
-        _InputCrouch = Input.GetButton("Crouch");
-        _InputAxis = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));
-        if(Input.GetKey(KeyCode.LeftShift))
-            controller.SetInput(Vector2.zero,_InputJump,_InputCrouch);
-        else
-            controller.SetInput(_InputAxis,_InputJump,_InputCrouch);
-    }
+
     void UpdateAnimations()
     {
         animator.SetBool("isGrounded",controller.GetIsGrounded());
         animator.SetBool("isCrouching",controller.GetIsCrouching());
         animator.SetBool("isSliding",controller.GetIsSliding());
-        animator.SetFloat("Speed",Mathf.Abs(_InputAxis.x) * (Input.GetKey(KeyCode.LeftShift)?0:1));
-        if(!controller.GetIsSliding() && _InputAxis.x != 0)transform.localScale = new Vector3(_InputAxis.x,1,1);
+        animator.SetFloat("Speed",Mathf.Abs(input.MovementAxis.x));
+        if(!controller.GetIsSliding() && input.MovementAxis.x != 0)transform.localScale = new Vector3(input.MovementAxis.x,1,1);
+
+        if(Input.anyKey)
+        {
+            if(input.MovementAxis.y > 0)
+            {
+                animator.runtimeAnimatorController = controllers[0];
+
+                if(Mathf.Abs(input.MovementAxis.y) > 0)
+                {
+                    animator.runtimeAnimatorController = controllers[1];
+                }   
+            }
+            else if(Input.GetAxisRaw("Vertical") == 0)
+            {
+                animator.runtimeAnimatorController = controllers[2];
+            }
+            else
+            {
+                animator.runtimeAnimatorController = controllers[3];
+            }
+        }
     }
 }

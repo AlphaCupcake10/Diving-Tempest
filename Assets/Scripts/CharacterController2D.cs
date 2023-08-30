@@ -31,7 +31,7 @@ public class CharacterController2D : MonoBehaviour
     public ControllerEvents Events;
     
     // INPUT VARIABLES
-    Vector2 InputAxis = Vector2.zero; // stores WASD
+    float InputX = 0; // stores AD
     bool InputJump = false; //store Jump
     bool InputJumpBuffer = false; //store Jump
     bool InputCrouch = false; //store Crouch
@@ -50,9 +50,9 @@ public class CharacterController2D : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
     }
 
-    public void SetInput(Vector2 _InputAxis,bool _InputJump,bool _InputCrouch)
+    public void SetInput(float _InputMoveX,bool _InputJump,bool _InputCrouch)
     {
-        InputAxis = _InputAxis;
+        InputX = _InputMoveX;
         InputJump = _InputJump;
         if(InputJump)
         {
@@ -136,20 +136,20 @@ public class CharacterController2D : MonoBehaviour
             }
             else if(isCrouching)
             {
-                velocity.x += (config.MaxVelocity * config.CrouchSpeedCoef * InputAxis.x - velocity.x)/config.Smoothing;
+                velocity.x += (config.MaxVelocity * config.CrouchSpeedCoef * InputX - velocity.x)/config.Smoothing;
             }
             else
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
-                velocity.x += (TargetVelocity * InputAxis.x - velocity.x)/config.Smoothing;
+                velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing;
             }
         }
         else//Air Movement
         {
-            if(InputAxis.x != 0)//To preserve momentum
+            if(InputX != 0)//To preserve momentum
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
-                velocity.x += (TargetVelocity * InputAxis.x - velocity.x)/config.Smoothing*config.AirControlCoef;
+                velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing*config.AirControlCoef;
             }
         }
         jumpTimer += Time.fixedDeltaTime;
@@ -161,7 +161,7 @@ public class CharacterController2D : MonoBehaviour
                 {
                     Events.onSlideJump.Invoke();
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.SlideJumpHeight));
-                    velocity.x += (config.MaxVelocity * config.SlideJumpSpeedBoost * Mathf.Sign(RB.velocity.x) - velocity.x)/config.Smoothing;
+                    velocity.x = (config.MaxVelocity * config.SlideJumpSpeedBoost * Mathf.Sign(velocity.x));
                     ResetJumpVars();
                 }
             }
