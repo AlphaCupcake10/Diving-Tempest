@@ -8,12 +8,9 @@ using UnityEngine.Events;
 public class ControllerEvents
 {
     public UnityEvent onJump;
-    public UnityEvent onSlideJump;
-    public UnityEvent onChargedJump;
-    public UnityEvent onSlideJumpReady;
-    public UnityEvent onChargedJumpReady;
-    public UnityEvent onSlideJumpCancel;
-    public UnityEvent onChargedJumpCancel;
+    public UnityEvent onSpecialJump;
+    public UnityEvent onSpecialJumpReady;
+    public UnityEvent onSpecialJumpCancel;
     public UnityEvent onLand;
 }
 
@@ -50,10 +47,8 @@ public class CharacterController2D : MonoBehaviour
     bool isCrouching = false;
     float jumpTimer = 0;
     float chargeTimer = 0;
-    bool isSlideJumpReady = false;
-    bool isChargedJumpReady = false;
-    bool p_isSlideJumpReady = false;
-    bool p_isChargedJumpReady = false;
+    bool isSpecialJumpReady = false;
+    bool p_isSpecialJumpReady = false;
     
     void Start()
     {
@@ -164,49 +159,62 @@ public class CharacterController2D : MonoBehaviour
         }
 
         // JUMPING LOGICS BELOW
-
-        if(isGroundedCayote && isCrouching && !isSliding)
+        if(!isSpecialJumpReady && isGroundedCayote)
         {
-            if(chargeTimer >= config.ChargeJumpTimeMS/1000)
+            if(isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
             {
-                isChargedJumpReady = true;
+                isSpecialJumpReady = true;
+            }
+            else if(isCrouching)
+            {
+                chargeTimer += Time.fixedDeltaTime;
+                if(chargeTimer > config.ChargeJumpTimeMS/1000)
+                {
+                    isSpecialJumpReady = true;
+                }
             }
             else
             {
-                isChargedJumpReady = false;
-                chargeTimer += Time.fixedDeltaTime;
+                chargeTimer = 0;
             }
         }
         else
         {
-            isChargedJumpReady = false;
             chargeTimer = 0;
         }
-        if(isGroundedCayote && isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
-        {
-            isSlideJumpReady = true;
-            isChargedJumpReady = true;
-            chargeTimer = config.ChargeJumpTimeMS/1000;
-        }
-        else
-        {
-            isSlideJumpReady = false;
-        }
+        // if(isGroundedCayote && isCrouching && !isSliding)
+        // {
+        //     if(chargeTimer >= config.ChargeJumpTimeMS/1000)
+        //     {
+        //         isChargedJumpReady = true;
+        //     }
+        //     else
+        //     {
+        //         isChargedJumpReady = false;
+        //         chargeTimer += Time.fixedDeltaTime;
+        //     }
+        // }
+        // else
+        // {
+        //     isChargedJumpReady = false;
+        //     chargeTimer = 0;
+        // }
+        // if(isGroundedCayote && isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
+        // {
+        //     isSlideJumpReady = true;
+        //     isChargedJumpReady = true;
+        //     chargeTimer = config.ChargeJumpTimeMS/1000;
+        // }
+        // else
+        // {
+        //     isSlideJumpReady = false;
+        // }
 
-        if(p_isChargedJumpReady != isChargedJumpReady)
+        if(p_isSpecialJumpReady != isSpecialJumpReady)
         {
-            if(isChargedJumpReady)Events.onChargedJumpReady.Invoke();
-            else Events.onChargedJumpCancel.Invoke();
-            p_isChargedJumpReady = isChargedJumpReady;
-        }
-        if(p_isSlideJumpReady != isSlideJumpReady)
-        {
-            if(isSlideJumpReady)Events.onSlideJumpReady.Invoke();
-            else
-            {
-                if(!isChargedJumpReady)Events.onSlideJumpCancel.Invoke();
-            }
-            p_isSlideJumpReady = isSlideJumpReady;
+            if(isSpecialJumpReady)Events.onSpecialJumpReady.Invoke();
+            else Events.onSpecialJumpCancel.Invoke();
+            p_isSpecialJumpReady = isSpecialJumpReady;
         }
 
         // ACTUAL JUMPING
@@ -216,9 +224,9 @@ public class CharacterController2D : MonoBehaviour
         {
             if(isSliding)
             {
-                if(isSlideJumpReady)
+                if(isSpecialJumpReady)
                 {
-                    Events.onSlideJump.Invoke();
+                    Events.onSpecialJump.Invoke();
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.SlideJumpHeight));
                     velocity.x = (config.MaxVelocity * config.SlideJumpSpeedBoost * Mathf.Sign(velocity.x));
                     ResetJumpVars();
@@ -226,11 +234,11 @@ public class CharacterController2D : MonoBehaviour
             }
             else
             {
-                if(isChargedJumpReady)
+                if(isSpecialJumpReady)
                 {
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.ChargedJumpHeight));
                     chargeTimer = 0;
-                    Events.onChargedJump.Invoke();
+                    Events.onSpecialJump.Invoke();
                 }
                 else
                 {
@@ -245,6 +253,7 @@ public class CharacterController2D : MonoBehaviour
     void ResetJumpVars()
     {
         jumpTimer = 0; 
+        isSpecialJumpReady = false;
         isGrounded = false;
         UpdateCayote();
         UpdateJumpBuffer();

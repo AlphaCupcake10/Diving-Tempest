@@ -12,7 +12,7 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        Jump = Input.GetButton("Jump");
+        Jump = Input.GetButtonDown("Jump");
         Crouch = Input.GetButton("Crouch");
         MovementAxis = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));
         Lock = Input.GetButton("Lock");

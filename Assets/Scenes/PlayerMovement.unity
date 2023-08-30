@@ -14152,7 +14152,7 @@ GameObject:
   - component: {fileID: 826505795}
   - component: {fileID: 826505794}
   m_Layer: 6
-  m_Name: SlideJump
+  m_Name: SpecialJump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19682,7 +19682,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.7490566, g: 0.9433353, b: 1, a: 0.09803922}
+      maxColor: {r: 0.7490566, g: 0.9433353, b: 1, a: 0.39215687}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -37872,7 +37872,6 @@ GameObject:
   - component: {fileID: 4807682197123086922}
   - component: {fileID: 4807682197123086919}
   - component: {fileID: 4807682197123086923}
-  - component: {fileID: 4807682197123086924}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -38316,7 +38315,7 @@ MonoBehaviour:
     onJump:
       m_PersistentCalls:
         m_Calls: []
-    onSlideJump:
+    onSpecialJump:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 826505795}
@@ -38331,22 +38330,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    onChargedJump:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 826505795}
-          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-          m_MethodName: Play
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onSlideJumpReady:
+    onSpecialJumpReady:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1282453998}
@@ -38361,37 +38345,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    onChargedJumpReady:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1282453998}
-          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-          m_MethodName: Play
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onSlideJumpCancel:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1282453998}
-          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-          m_MethodName: Stop
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    onChargedJumpCancel:
+    onSpecialJumpCancel:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1282453998}
@@ -38555,22 +38509,6 @@ MonoBehaviour:
   Crouch: 0
   MovementAxis: {x: 0, y: 0}
   Lock: 0
---- !u!114 &4807682197123086924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252216781506553448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcda50a55906d02449003781558be4c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_object:
-  - {fileID: 1282453998}
-  m_floats: []
-  m_vector3: []
 --- !u!1 &5896538301067297210
 GameObject:
   m_ObjectHideFlags: 0
