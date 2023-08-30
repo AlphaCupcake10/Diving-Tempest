@@ -16,6 +16,8 @@ public class CharacterConfig : ScriptableObject
     [Range(0,1)] public float SlideJumpStartThreshold = .8f;
     [Range(0,8)] public float SlideJumpSpeedBoost = 2f;
     public float SlideJumpHeight = 2;
+    public float ChargedJumpHeight = 2.5f;
+    public float ChargeJumpTimeMS = 1000;
     public float CayoteTimeMS = 100;
     public float JumpCooldownMS = 500;
     public float JumpBufferTimeMS = 50;

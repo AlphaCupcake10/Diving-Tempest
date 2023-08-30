@@ -9,6 +9,11 @@ public class ControllerEvents
 {
     public UnityEvent onJump;
     public UnityEvent onSlideJump;
+    public UnityEvent onChargedJump;
+    public UnityEvent onSlideJumpReady;
+    public UnityEvent onChargedJumpReady;
+    public UnityEvent onSlideJumpCancel;
+    public UnityEvent onChargedJumpCancel;
     public UnityEvent onLand;
 }
 
@@ -44,6 +49,11 @@ public class CharacterController2D : MonoBehaviour
     bool isSliding = false;
     bool isCrouching = false;
     float jumpTimer = 0;
+    float chargeTimer = 0;
+    bool isSlideJumpReady = false;
+    bool isChargedJumpReady = false;
+    bool p_isSlideJumpReady = false;
+    bool p_isChargedJumpReady = false;
     
     void Start()
     {
@@ -152,12 +162,61 @@ public class CharacterController2D : MonoBehaviour
                 velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing*config.AirControlCoef;
             }
         }
+
+        // JUMPING LOGICS BELOW
+
+        if(isGroundedCayote && isCrouching && !isSliding)
+        {
+            if(chargeTimer >= config.ChargeJumpTimeMS/1000)
+            {
+                isChargedJumpReady = true;
+            }
+            else
+            {
+                isChargedJumpReady = false;
+                chargeTimer += Time.fixedDeltaTime;
+            }
+        }
+        else
+        {
+            isChargedJumpReady = false;
+            chargeTimer = 0;
+        }
+        if(isGroundedCayote && isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
+        {
+            isSlideJumpReady = true;
+            isChargedJumpReady = true;
+            chargeTimer = config.ChargeJumpTimeMS/1000;
+        }
+        else
+        {
+            isSlideJumpReady = false;
+        }
+
+        if(p_isChargedJumpReady != isChargedJumpReady)
+        {
+            if(isChargedJumpReady)Events.onChargedJumpReady.Invoke();
+            else Events.onChargedJumpCancel.Invoke();
+            p_isChargedJumpReady = isChargedJumpReady;
+        }
+        if(p_isSlideJumpReady != isSlideJumpReady)
+        {
+            if(isSlideJumpReady)Events.onSlideJumpReady.Invoke();
+            else
+            {
+                if(!isChargedJumpReady)Events.onSlideJumpCancel.Invoke();
+            }
+            p_isSlideJumpReady = isSlideJumpReady;
+        }
+
+        // ACTUAL JUMPING
+
         jumpTimer += Time.fixedDeltaTime;
         if(isGroundedCayote && InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000)
         {
             if(isSliding)
             {
-                if(Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
+                if(isSlideJumpReady)
                 {
                     Events.onSlideJump.Invoke();
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.SlideJumpHeight));
@@ -167,8 +226,17 @@ public class CharacterController2D : MonoBehaviour
             }
             else
             {
-                Events.onJump.Invoke();
-                velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight));
+                if(isChargedJumpReady)
+                {
+                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.ChargedJumpHeight));
+                    chargeTimer = 0;
+                    Events.onChargedJump.Invoke();
+                }
+                else
+                {
+                    Events.onJump.Invoke();
+                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight));
+                }
                 ResetJumpVars();
             }
         }

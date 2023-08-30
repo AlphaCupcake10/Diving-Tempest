@@ -21,8 +21,10 @@ MonoBehaviour:
   SlideStartThreshold: 0.9
   SlideStopThreshold: 0.5
   SlideJumpStartThreshold: 0.8
-  SlideJumpSpeedBoost: 1
-  SlideJumpHeight: 2
+  SlideJumpSpeedBoost: 1.5
+  SlideJumpHeight: 1.4
+  ChargedJumpHeight: 2.5
+  ChargeJumpTimeMS: 1000
   CayoteTimeMS: 100
   JumpCooldownMS: 500
   JumpBufferTimeMS: 50
