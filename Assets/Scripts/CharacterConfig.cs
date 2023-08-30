@@ -24,11 +24,11 @@ public class CharacterConfig : ScriptableObject
     [Range(0,4)] public float SlideJumpHeightRatio = 2;
 
     [Range(0,4)] public float ChargedJumpHeightRatio = 2.5f;
-    // [Range(0,1)] public float ImperfectRatio = .5f;
+    [Range(0,1)] public float ImperfectRatio = .5f;
 
     [Header("Timings")]
-    // public float PerfectDelayMS = 100; 
-    // public float PerfectWindowMS = 100; 
+    public float PerfectDelayMS = 100; 
+    public float PerfectWindowMS = 100; 
     public float ChargeJumpTimeMS = 1000;
     public float CayoteTimeMS = 100;
     public float JumpCooldownMS = 500;

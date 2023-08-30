@@ -47,6 +47,7 @@ public class CharacterController2D : MonoBehaviour
     bool isCrouching = false;
     float jumpTimer = 0;
     float chargeTimer = 0;
+    float perfectTime = 0;
     bool isSpecialJumpReady = false;
     bool p_isSpecialJumpReady = false;
     
@@ -164,6 +165,7 @@ public class CharacterController2D : MonoBehaviour
             if(isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
             {
                 isSpecialJumpReady = true;
+                perfectTime = Time.time + config.PerfectDelayMS/1000;
             }
             else if(isCrouching)
             {
@@ -171,6 +173,7 @@ public class CharacterController2D : MonoBehaviour
                 if(chargeTimer > config.ChargeJumpTimeMS/1000)
                 {
                     isSpecialJumpReady = true;
+                    perfectTime = Time.time + config.PerfectDelayMS/1000;
                 }
             }
             else
@@ -203,7 +206,7 @@ public class CharacterController2D : MonoBehaviour
         {
             if(isSliding)
             {
-                if(isSpecialJumpReady)
+                if(isSpecialJumpReady && Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
                 {
                     Events.onSpecialJump.Invoke();
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.SlideJumpHeightRatio));
@@ -213,7 +216,7 @@ public class CharacterController2D : MonoBehaviour
             }
             else
             {
-                if(isSpecialJumpReady)
+                if(isSpecialJumpReady && Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
                 {
                     velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.ChargedJumpHeightRatio));
                     chargeTimer = 0;

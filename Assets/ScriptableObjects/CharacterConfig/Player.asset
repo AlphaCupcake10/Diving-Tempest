@@ -13,18 +13,21 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   MaxVelocity: 4
+  JumpHeight: 1.5
   Smoothing: 7
   AirControlCoef: 0.2
-  JumpHeight: 1.5
   CrouchSpeedCoef: 0.25
   SlidingSmoothness: 0.99
   SlideStartThreshold: 0.9
   SlideStopThreshold: 0.5
-  SlideJumpStartThreshold: 0.8
-  SlideJumpSpeedBoost: 1.5
-  SlideJumpHeight: 1.4
-  ChargedJumpHeight: 2.5
-  ChargeJumpTimeMS: 1000
+  SlideJumpStartThreshold: 0.9
+  SlideJumpSpeedRatio: 1.5
+  SlideJumpHeightRatio: 0.75
+  ChargedJumpHeightRatio: 1.7
+  ImperfectRatio: 0.5
+  PerfectDelayMS: 600
+  PerfectWindowMS: 60
+  ChargeJumpTimeMS: 500
   CayoteTimeMS: 100
   JumpCooldownMS: 500
   JumpBufferTimeMS: 50
