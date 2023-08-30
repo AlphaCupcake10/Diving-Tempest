@@ -12,24 +12,28 @@ public class CharacterEditor : Editor
         CharacterConfig config = (CharacterConfig)target;
 
         GUILayout.BeginVertical();
-            float AirTime = Mathf.Sqrt(Mathf.Abs(8*config.JumpHeight/Physics2D.gravity.y));
-            float MaxRange = config.MaxVelocity * AirTime;
-
-            GUILayout.Label("Normal");
-            PrintProp("Jump Height :",config.JumpHeight);
-            PrintProp("Max Velocity :",config.MaxVelocity);
-            PrintProp("Max Jump Range :",MaxRange);
-            PrintSingle("Air Time :",AirTime);
-            GUILayout.Space(25);
-            
-            AirTime = Mathf.Sqrt(Mathf.Abs(8*config.SlideJumpHeight/Physics2D.gravity.y));
-            MaxRange = config.MaxVelocity * AirTime * config.SlideJumpSpeedBoost;
-
-            GUILayout.Label("Sliding");
-            PrintProp("Jump Height :",config.SlideJumpHeight);
-            PrintProp("Max Velocity :",config.MaxVelocity*config.SlideJumpSpeedBoost);
-            PrintProp("Max Jump Range :",MaxRange);
-            PrintSingle("Air Time :",AirTime);
+        
+        GUILayout.Space(20);
+        GUILayout.Label("Normal",EditorStyles.boldLabel);
+        PrintProp("Max Velocity",config.MaxVelocity);
+        PrintProp("Max Jump Height",config.JumpHeight);
+        float airTime = config.GetAirTime(config.JumpHeight);
+        PrintProp("Air Time",airTime);
+        PrintProp("Range",config.MaxVelocity*airTime);
+        
+        GUILayout.Space(20);
+        GUILayout.Label("Slide Jump",EditorStyles.boldLabel);
+        PrintProp("Max Velocity",config.MaxVelocity * config.SlideJumpSpeedRatio);
+        PrintProp("Max Jump Height",config.JumpHeight * config.SlideJumpHeightRatio);
+        airTime = config.GetAirTime(config.JumpHeight * config.SlideJumpHeightRatio);
+        PrintProp("Air Time",airTime);
+        PrintProp("Range",config.MaxVelocity*airTime*config.SlideJumpSpeedRatio);
+        
+        GUILayout.Space(20);
+        GUILayout.Label("Charged Jump",EditorStyles.boldLabel);
+        PrintProp("Max Jump Height",config.JumpHeight * config.ChargedJumpHeightRatio);
+        airTime = config.GetAirTime(config.JumpHeight * config.ChargedJumpHeightRatio);
+        PrintProp("Air Time",airTime);
 
         GUILayout.EndVertical();
     }
@@ -45,6 +49,7 @@ public class CharacterEditor : Editor
     {
         GUILayout.BeginHorizontal();
             GUILayout.Label(Label,GUILayout.Width(150));
+            GUILayout.Label(" : ",GUILayout.Width(10));
             GUILayout.Label(Value + "ms",GUILayout.Width(150));
         GUILayout.EndHorizontal();
     }

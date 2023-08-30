@@ -182,33 +182,12 @@ public class CharacterController2D : MonoBehaviour
         {
             chargeTimer = 0;
         }
-        // if(isGroundedCayote && isCrouching && !isSliding)
-        // {
-        //     if(chargeTimer >= config.ChargeJumpTimeMS/1000)
-        //     {
-        //         isChargedJumpReady = true;
-        //     }
-        //     else
-        //     {
-        //         isChargedJumpReady = false;
-        //         chargeTimer += Time.fixedDeltaTime;
-        //     }
-        // }
-        // else
-        // {
-        //     isChargedJumpReady = false;
-        //     chargeTimer = 0;
-        // }
-        // if(isGroundedCayote && isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
-        // {
-        //     isSlideJumpReady = true;
-        //     isChargedJumpReady = true;
-        //     chargeTimer = config.ChargeJumpTimeMS/1000;
-        // }
-        // else
-        // {
-        //     isSlideJumpReady = false;
-        // }
+
+        if(isSpecialJumpReady && !isCrouching && !isSliding)
+        {
+            chargeTimer = 0;
+            isSpecialJumpReady = false;
+        }
 
         if(p_isSpecialJumpReady != isSpecialJumpReady)
         {
@@ -227,8 +206,8 @@ public class CharacterController2D : MonoBehaviour
                 if(isSpecialJumpReady)
                 {
                     Events.onSpecialJump.Invoke();
-                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.SlideJumpHeight));
-                    velocity.x = (config.MaxVelocity * config.SlideJumpSpeedBoost * Mathf.Sign(velocity.x));
+                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.SlideJumpHeightRatio));
+                    velocity.x = (config.MaxVelocity * config.SlideJumpSpeedRatio * Mathf.Sign(velocity.x));
                     ResetJumpVars();
                 }
             }
@@ -236,7 +215,7 @@ public class CharacterController2D : MonoBehaviour
             {
                 if(isSpecialJumpReady)
                 {
-                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.ChargedJumpHeight));
+                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.ChargedJumpHeightRatio));
                     chargeTimer = 0;
                     Events.onSpecialJump.Invoke();
                 }
