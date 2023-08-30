@@ -18,7 +18,9 @@ public class PlayerMovement : MonoBehaviour
     public CinemachineVirtualCamera vcam;
     [Range(0,1)]public float SlerpFactor = 0.5f; 
 
-    public AnimatorOverrideController[] controllers;
+    public AnimatorOverrideController[] AnimatorOverrideControllers;
+    int p_aimState = 0;
+    int aimState = 0;
 
 
     void Start()
@@ -46,25 +48,29 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Speed",Mathf.Abs(input.MovementAxis.x));
         if(!controller.GetIsSliding() && input.MovementAxis.x != 0)transform.localScale = new Vector3(input.MovementAxis.x,1,1);
 
-        if(Input.anyKey)
+        if(input.MovementAxis.y > 0)
         {
-            if(input.MovementAxis.y > 0)
-            {
-                animator.runtimeAnimatorController = controllers[0];
+            aimState = 0;
 
-                if(Mathf.Abs(input.MovementAxis.y) > 0)
-                {
-                    animator.runtimeAnimatorController = controllers[1];
-                }   
-            }
-            else if(Input.GetAxisRaw("Vertical") == 0)
+            if(Mathf.Abs(input.MovementAxis.y) > 0)
             {
-                animator.runtimeAnimatorController = controllers[2];
-            }
-            else
-            {
-                animator.runtimeAnimatorController = controllers[3];
-            }
+                aimState = 1;
+            }   
         }
+        else if(Input.GetAxisRaw("Vertical") == 0)
+        {
+            aimState = 2;
+        }
+        else
+        {
+            aimState = 3;
+        }
+
+        if(p_aimState != aimState)
+        {
+            p_aimState = aimState;
+            animator.runtimeAnimatorController = AnimatorOverrideControllers[aimState];
+        }
+
     }
 }

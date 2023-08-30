@@ -18,10 +18,10 @@ MonoBehaviour:
   JumpHeight: 1.5
   CrouchSpeedCoef: 0.25
   SlidingSmoothness: 0.99
-  SlideStartThreshold: 0.7
+  SlideStartThreshold: 0.9
   SlideStopThreshold: 0.5
   SlideJumpStartThreshold: 0.8
-  SlideJumpSpeedBoost: 1.2
+  SlideJumpSpeedBoost: 1
   SlideJumpHeight: 2
   CayoteTimeMS: 100
   JumpCooldownMS: 500
