@@ -14,17 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxVelocity: 4
   JumpHeight: 1.5
-  Smoothing: 7
+  Smoothing: 6.9
   AirControlCoef: 0.2
   CrouchSpeedCoef: 0.25
+  MaxVelocityDampingCoef: 0.99
   SlidingSmoothness: 0.99
-  SlideStartThreshold: 0.9
+  SlideStartThreshold: 0.75
   SlideStopThreshold: 0.5
-  SlideJumpStartThreshold: 0.9
+  SlideJumpStartThreshold: 1
   SlideJumpSpeedRatio: 1.5
-  SlideJumpHeightRatio: 0.75
+  SlideJumpHeightRatio: 1
   ChargedJumpHeightRatio: 1.7
-  ImperfectRatio: 0.5
+  ImperfectRatio: 0.8
   PerfectDelayMS: 600
   PerfectWindowMS: 60
   ChargeJumpTimeMS: 500

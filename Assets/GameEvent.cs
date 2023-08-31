@@ -6,19 +6,31 @@ using UnityEngine.Events;
 
 public class GameEvent:MonoBehaviour
 {
-    public List<Object> m_object;
-    public List<float> m_floats;
-    public List<Vector3> m_vector3;
+    public Object m_object;
+    public float m_float;
+    public Vector3 m_vector3;
     public void SetGravity(Collider2D col)
     {
-        col?.GetComponent<Gravity>()?.SetGravityAngle(m_floats[0]);
+        col?.GetComponent<Gravity>()?.SetGravityAngle(m_float);
     }
     public void AddForce(Collider2D col)
     {
-        col?.GetComponent<Rigidbody2D>()?.AddForce(m_vector3[0]);
+        col?.GetComponent<Rigidbody2D>()?.AddForce(m_vector3);
+    }
+    public void AddForce(Rigidbody2D RB)
+    {
+        RB?.AddForce(m_vector3);
     }
     public void TeleportObject(Collider2D col)
     {
-        col.transform.position = ((GameObject)m_object[0]).transform.position;
+        col.transform.position = ((GameObject)m_object).transform.position;
+    }
+    public void DeltaHealth(Collider2D col)
+    {
+        col?.GetComponent<EntityHealth>()?.DeltaHealth(m_float);
+    }
+    public void DeltaHealth(EntityHealth health)
+    {
+        health?.DeltaHealth(m_float);
     }
 }

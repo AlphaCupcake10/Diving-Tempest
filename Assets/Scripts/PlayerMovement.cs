@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public AnimatorOverrideController[] AnimatorOverrideControllers;
     int p_aimState = 0;
     int aimState = 0;
-
+    bool movementEnabled = true;
 
     void Start()
     {
@@ -35,9 +35,18 @@ public class PlayerMovement : MonoBehaviour
         
         if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
 
-        controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch);
+        if(movementEnabled)
+        {
+            controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch);
+            if(animator)UpdateAnimations();
+            animator.enabled = true;
+        }
+        else
+        {
+            animator.enabled = false;
+            controller.SetInput(0,false,false);
+        }
 
-        if(animator)UpdateAnimations();
     }
 
     void UpdateAnimations()
@@ -72,5 +81,19 @@ public class PlayerMovement : MonoBehaviour
             animator.runtimeAnimatorController = AnimatorOverrideControllers[aimState];
         }
 
+    }
+    public void DisableMovement()
+    {
+        CancelInvoke("EnableMovement");
+        movementEnabled = false;
+    }
+    public void EnableMovement()
+    {
+        movementEnabled = true;
+    }
+    public void DisableMovement(float For)
+    {
+        movementEnabled = false;
+        Invoke("EnableMovement",For);
     }
 }

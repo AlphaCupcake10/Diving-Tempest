@@ -11,6 +11,7 @@ public class CharacterConfig : ScriptableObject
     [Range(1,25)] public float Smoothing = 7;
     [Range(0,1)] public float AirControlCoef = .2f;
     [Range(0,1)] public float CrouchSpeedCoef = 0.25f; 
+    [Range(0,1)] public float MaxVelocityDampingCoef = .95f;
 
 
     [Header("Sliding Thresholds")]

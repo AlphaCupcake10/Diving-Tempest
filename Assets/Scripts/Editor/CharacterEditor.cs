@@ -28,12 +28,20 @@ public class CharacterEditor : Editor
         airTime = config.GetAirTime(config.JumpHeight * config.SlideJumpHeightRatio);
         PrintProp("Air Time",airTime);
         PrintProp("Range",config.MaxVelocity*airTime*config.SlideJumpSpeedRatio);
+        PrintProp("Imperfect Velocity",config.MaxVelocity * config.SlideJumpSpeedRatio * config.ImperfectRatio);
+        PrintProp("Imperfect Jump Height",config.JumpHeight * config.SlideJumpHeightRatio * config.ImperfectRatio);
+        airTime = config.GetAirTime(config.JumpHeight * config.SlideJumpHeightRatio * config.ImperfectRatio);
+        PrintProp("Imperfect Air Time",airTime);
+        PrintProp("Imperfect Range",config.MaxVelocity*airTime*config.SlideJumpSpeedRatio * config.ImperfectRatio);
         
         GUILayout.Space(20);
         GUILayout.Label("Charged Jump",EditorStyles.boldLabel);
         PrintProp("Max Jump Height",config.JumpHeight * config.ChargedJumpHeightRatio);
         airTime = config.GetAirTime(config.JumpHeight * config.ChargedJumpHeightRatio);
         PrintProp("Air Time",airTime);
+        PrintProp("Imperfect Jump Height",config.JumpHeight * config.ChargedJumpHeightRatio*config.ImperfectRatio);
+        airTime = config.GetAirTime(config.JumpHeight * config.ChargedJumpHeightRatio*config.ImperfectRatio);
+        PrintProp("Imperfect Air Time",airTime);
 
         GUILayout.EndVertical();
     }

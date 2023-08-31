@@ -12,6 +12,8 @@ public class ControllerEvents
     public UnityEvent onSpecialJumpReady;
     public UnityEvent onSpecialJumpCancel;
     public UnityEvent onLand;
+    public UnityEvent onSuperSonic;
+    public UnityEvent onSuperSonicCancel;
 }
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -50,6 +52,8 @@ public class CharacterController2D : MonoBehaviour
     float perfectTime = 0;
     bool isSpecialJumpReady = false;
     bool p_isSpecialJumpReady = false;
+    bool isSuperSonic = false;
+    bool p_isSuperSonic = false;
     
     void Start()
     {
@@ -73,7 +77,26 @@ public class CharacterController2D : MonoBehaviour
     }
     void FixedUpdate()
     {
+        CheckForSuperSonic();
         Move();
+    }
+
+    void CheckForSuperSonic()
+    {
+        isSuperSonic = RB.velocity.sqrMagnitude > config.MaxVelocity*config.MaxVelocity;
+        
+        if(p_isSuperSonic != isSuperSonic)
+        {
+            if(isSuperSonic)
+            {
+                Events.onSuperSonic.Invoke();
+            }
+            else
+            {
+                Events.onSuperSonicCancel.Invoke();
+            }
+            p_isSuperSonic = isSuperSonic;
+        }
     }
 
     void CheckGroundCeil()
@@ -146,7 +169,7 @@ public class CharacterController2D : MonoBehaviour
             }
             else
             {
-                float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
+                float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x)*config.MaxVelocityDampingCoef,config.MaxVelocity);//Don't slow down if going fast
                 velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing;
             }
         }
@@ -206,21 +229,36 @@ public class CharacterController2D : MonoBehaviour
         {
             if(isSliding)
             {
-                if(isSpecialJumpReady && Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
+                if(isSpecialJumpReady)
                 {
-                    Events.onSpecialJump.Invoke();
-                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.SlideJumpHeightRatio));
-                    velocity.x = (config.MaxVelocity * config.SlideJumpSpeedRatio * Mathf.Sign(velocity.x));
+                    if(Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
+                    {
+                        velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.SlideJumpHeightRatio));
+                        velocity.x = (config.MaxVelocity * config.SlideJumpSpeedRatio * Mathf.Sign(velocity.x));
+                        Events.onSpecialJump.Invoke();
+                    }
+                    else
+                    {
+                        velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.SlideJumpHeightRatio*config.ImperfectRatio));
+                        velocity.x = (config.MaxVelocity * config.SlideJumpSpeedRatio * Mathf.Sign(velocity.x)*config.ImperfectRatio);
+                    }
                     ResetJumpVars();
                 }
             }
             else
             {
-                if(isSpecialJumpReady && Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
+                if(isSpecialJumpReady)
                 {
-                    velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.ChargedJumpHeightRatio));
+                    if(Mathf.Abs(Time.time-perfectTime) <= config.PerfectWindowMS/1000)
+                    {
+                        velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.ChargedJumpHeightRatio));
+                        Events.onSpecialJump.Invoke();
+                    }
+                    else
+                    {
+                        velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.ChargedJumpHeightRatio*config.ImperfectRatio));
+                    }
                     chargeTimer = 0;
-                    Events.onSpecialJump.Invoke();
                 }
                 else
                 {
