@@ -15,7 +15,7 @@ public class CharacterConfig : ScriptableObject
 
 
     [Header("Sliding Thresholds")]
-    [Range(.9f,1)] public float SlidingSmoothness = .99f; 
+    [Range(1,1.1f)] public float SlidingSmoothing = 1.0101010101f; 
     [Range(0,1)] public float SlideStartThreshold = .7f; 
     [Range(0,1)] public float SlideStopThreshold = .5f; 
     [Range(0,1)] public float SlideJumpStartThreshold = .8f;

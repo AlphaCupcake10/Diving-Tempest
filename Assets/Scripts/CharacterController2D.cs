@@ -157,7 +157,7 @@ public class CharacterController2D : MonoBehaviour
         {
             if(isSliding)
             {    
-                velocity.x *= config.SlidingSmoothness;
+                velocity.x /= config.SlidingSmoothing;
                 if(Mathf.Abs(velocity.x) < config.MaxVelocity * config.SlideStopThreshold)
                 {
                     isSliding = false;
