@@ -181,9 +181,11 @@ public class CharacterController2D : MonoBehaviour
                 velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing*config.AirControlCoef;
             }
         }
+        
+        bool willBonk = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
 
         // JUMPING LOGICS BELOW
-        if(!isSpecialJumpReady && isGroundedCayote)
+        if(!isSpecialJumpReady && isGroundedCayote && !willBonk)
         {
             if(isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
             {
@@ -225,7 +227,7 @@ public class CharacterController2D : MonoBehaviour
         // ACTUAL JUMPING
 
         jumpTimer += Time.fixedDeltaTime;
-        if(isGroundedCayote && InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000)
+        if(isGroundedCayote && InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
         {
             if(isSliding)
             {

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5fb1790d008b8448fac5cb76f8d159, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  MaxVelocity: 4
+  MaxVelocity: 4.5
   JumpHeight: 1.5
   Smoothing: 7
   AirControlCoef: 0.2
   CrouchSpeedCoef: 0.25
   MaxVelocityDampingCoef: 0.99
   SlidingSmoothing: 1.0101
-  SlideStartThreshold: 0.75
+  SlideStartThreshold: 0.9
   SlideStopThreshold: 0.5
   SlideJumpStartThreshold: 1
   SlideJumpSpeedRatio: 1.5

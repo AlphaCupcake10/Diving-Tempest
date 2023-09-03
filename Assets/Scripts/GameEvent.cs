@@ -23,6 +23,8 @@ public class GameEvent:MonoBehaviour
     }
     public void TeleportObject(Collider2D col)
     {
+        Rigidbody2D rb = ((GameObject)m_object).GetComponent<Rigidbody2D>();
+        if(rb)rb.velocity = Vector2.zero;
         col.transform.position = ((GameObject)m_object).transform.position;
     }
     public void DeltaHealth(Collider2D col)
