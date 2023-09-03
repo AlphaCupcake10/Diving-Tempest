@@ -15,17 +15,20 @@ MonoBehaviour:
   MaxVelocity: 4.5
   JumpHeight: 1.5
   Smoothing: 7
-  AirControlCoef: 0.2
+  AirControlCoef: 0.15
   CrouchSpeedCoef: 0.25
   MaxVelocityDampingCoef: 0.99
   SlidingSmoothing: 1.0101
   SlideStartThreshold: 0.9
   SlideStopThreshold: 0.5
   SlideJumpStartThreshold: 1
-  SlideJumpSpeedRatio: 1.5
+  SlideJumpSpeedRatio: 1.65
   SlideJumpHeightRatio: 1
   ChargedJumpHeightRatio: 1.7
   ImperfectRatio: 0.8
+  WallSlideFactor: 0.8
+  WallJumpSpeedRatio: 1
+  WallJumpHeightRatio: 1
   PerfectDelayMS: 500
   PerfectWindowMS: 50
   ChargeJumpTimeMS: 500

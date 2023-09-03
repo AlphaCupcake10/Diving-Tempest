@@ -37,14 +37,14 @@ public class PlayerMovement : MonoBehaviour
 
         if(movementEnabled)
         {
-            controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch);
+            controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch,input.Lock);
             if(animator)UpdateAnimations();
             animator.enabled = true;
         }
         else
         {
             animator.enabled = false;
-            controller.SetInput(0,false,false);
+            controller.SetInput(0,false,false,false);
         }
 
     }
@@ -61,12 +61,12 @@ public class PlayerMovement : MonoBehaviour
         {
             aimState = 0;
 
-            if(Mathf.Abs(input.MovementAxis.y) > 0)
+            if(Mathf.Abs(input.MovementAxis.x) > 0)
             {
                 aimState = 1;
             }   
         }
-        else if(Input.GetAxisRaw("Vertical") == 0)
+        else if(input.MovementAxis.y == 0)
         {
             aimState = 2;
         }

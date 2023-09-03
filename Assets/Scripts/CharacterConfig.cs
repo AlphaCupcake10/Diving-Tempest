@@ -27,6 +27,11 @@ public class CharacterConfig : ScriptableObject
     [Range(0,4)] public float ChargedJumpHeightRatio = 2.5f;
     [Range(0,1)] public float ImperfectRatio = .5f;
 
+    [Header("Wall Jumps")]
+    [Range(0,1)] public float WallSlideFactor = .8f;
+    [Range(0,8)] public float WallJumpSpeedRatio = .75f;
+    [Range(0,4)] public float WallJumpHeightRatio = .5f;
+
     [Header("Timings")]
     public float PerfectDelayMS = 100; 
     public float PerfectWindowMS = 100; 
