@@ -9,7 +9,6 @@ using Cinemachine;
 public class PlayerMovement : MonoBehaviour
 {
     //References
-    public Animator animator;
     CharacterController2D controller;    
     PlayerInput input;
     Gravity gravity;
@@ -18,10 +17,10 @@ public class PlayerMovement : MonoBehaviour
     public CinemachineVirtualCamera vcam;
     [Range(0,1)]public float SlerpFactor = 0.5f; 
 
-    public AnimatorOverrideController[] AnimatorOverrideControllers;
-    int p_aimState = 0;
-    int aimState = 0;
     bool movementEnabled = true;
+    bool facingRight = true;
+
+    public Animator animator;
 
     void Start()
     {
@@ -38,50 +37,60 @@ public class PlayerMovement : MonoBehaviour
         if(movementEnabled)
         {
             controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch,input.Lock);
-            if(animator)UpdateAnimations();
-            animator.enabled = true;
         }
         else
         {
-            animator.enabled = false;
             controller.SetInput(0,false,false,false);
         }
-
+        UpdateFlip();
+        UpdateAnimations();
     }
 
     void UpdateAnimations()
     {
-        animator.SetBool("isGrounded",controller.GetIsGrounded());
+        Debug.Log("help");
+        animator.SetFloat("XSpeed",Mathf.Abs(controller.GetXSpeed()));
+        animator.SetFloat("YSpeed",controller.GetYSpeed());
         animator.SetBool("isCrouching",controller.GetIsCrouching());
         animator.SetBool("isSliding",controller.GetIsSliding());
-        animator.SetFloat("Speed",Mathf.Abs(input.MovementAxis.x));
-        if(!controller.GetIsSliding() && input.MovementAxis.x != 0)transform.localScale = new Vector3(input.MovementAxis.x,1,1);
+        animator.SetBool("isGrounded",controller.GetIsGrounded());
+        animator.SetBool("isWalled",controller.GetIsWalled());
+    }
 
-        if(input.MovementAxis.y > 0)
+    void UpdateFlip()
+    {
+        if(controller.GetIsGrounded())
         {
-            aimState = 0;
-
-            if(Mathf.Abs(input.MovementAxis.x) > 0)
-            {
-                aimState = 1;
-            }   
-        }
-        else if(input.MovementAxis.y == 0)
-        {
-            aimState = 2;
+            if(!controller.GetIsSliding())
+                Flip(input.MovementAxis.x);
         }
         else
         {
-            aimState = 3;
+            if(input.Lock)
+            {
+                Flip(controller.GetXSpeed());
+            }
+            else
+            {
+                Flip(controller.GetXSpeed());
+                // Flip(input.MovementAxis.x);
+            }
         }
-
-        if(p_aimState != aimState)
-        {
-            p_aimState = aimState;
-            animator.runtimeAnimatorController = AnimatorOverrideControllers[aimState];
-        }
-
     }
+    void Flip(float X)
+    {
+        if(X > 0.05f && !facingRight)
+        {
+            facingRight = true;
+            transform.localScale = new Vector3(1,1,1);
+        }
+        if(X < -0.05f && facingRight)
+        {
+            facingRight = false;
+            transform.localScale = new Vector3(-1,1,1);
+        }
+    }
+    
     public void DisableMovement()
     {
         CancelInvoke("EnableMovement");

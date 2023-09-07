@@ -290,7 +290,6 @@ public class CharacterController2D : MonoBehaviour
             {
                 velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio));
                 velocity.x = (config.MaxVelocity * config.WallJumpSpeedRatio * -transform.localScale.x);
-                transform.localScale = new Vector3(-transform.localScale.x,1,1);
                         
                 ResetJumpVars();
             }
@@ -328,8 +327,16 @@ public class CharacterController2D : MonoBehaviour
     {
         return isSliding;
     }
-    public float GetSpeed()
+    public bool GetIsWalled()
+    {
+        return isWalled;
+    }
+    public float GetXSpeed()
     {
         return Vector2.Dot(transform.right,RB.velocity);
+    }
+    public float GetYSpeed()
+    {
+        return Vector2.Dot(transform.up,RB.velocity);
     }
 }
