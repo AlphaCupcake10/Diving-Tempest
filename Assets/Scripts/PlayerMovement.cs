@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     PlayerInput input;
     Gravity gravity;
 
+    public Transform Graphic;
+
     [Header("Camera")]
     public CinemachineVirtualCamera vcam;
     [Range(0,1)]public float SlerpFactor = 0.5f; 
@@ -36,11 +38,11 @@ public class PlayerMovement : MonoBehaviour
 
         if(movementEnabled)
         {
-            controller.SetInput(input.MovementAxis.x,input.Jump,input.Crouch,input.Lock);
+            controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
         }
         else
         {
-            controller.SetInput(0,false,false,false);
+            controller.SetInput(Vector2.zero,false,false);
         }
         UpdateFlip();
         UpdateAnimations();
@@ -48,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateAnimations()
     {
-        Debug.Log("help");
+        // Debug.Log("help");
         animator.SetFloat("XSpeed",Mathf.Abs(controller.GetXSpeed()));
         animator.SetFloat("YSpeed",controller.GetYSpeed());
         animator.SetBool("isCrouching",controller.GetIsCrouching());
@@ -59,35 +61,19 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateFlip()
     {
-        if(controller.GetIsGrounded())
-        {
-            if(!controller.GetIsSliding())
-                Flip(input.MovementAxis.x);
-        }
-        else
-        {
-            if(input.Lock)
-            {
-                Flip(controller.GetXSpeed());
-            }
-            else
-            {
-                Flip(controller.GetXSpeed());
-                // Flip(input.MovementAxis.x);
-            }
-        }
+        Flip(controller.GetXSpeed(),controller.GetIsWalledDir(),controller.GetIsGrounded());
     }
-    void Flip(float X)
+    void Flip(float X,int isWalledDir , bool isGrounded)
     {
-        if(X > 0.05f && !facingRight)
+        if((X > 0.05f || (isWalledDir == 1 && !isGrounded)) && !facingRight)
         {
             facingRight = true;
-            transform.localScale = new Vector3(1,1,1);
+            Graphic.localScale = new Vector3(1,1,1);
         }
-        if(X < -0.05f && facingRight)
+        if((X < -0.05f || (isWalledDir == -1 && !isGrounded)) && facingRight)
         {
             facingRight = false;
-            transform.localScale = new Vector3(-1,1,1);
+            Graphic.localScale = new Vector3(-1,1,1);
         }
     }
     

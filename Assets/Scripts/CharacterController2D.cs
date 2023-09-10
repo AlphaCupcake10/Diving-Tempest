@@ -29,21 +29,22 @@ public class CharacterController2D : MonoBehaviour
     public float CheckRadius = .2f;
     public Transform GroundCheckPoint;
     public Transform CeilingCheckPoint;
-    public Transform WallCheckPoint;
+    public Transform WallCheckPointLeft;
+    public Transform WallCheckPointRight;
     
     [Header("Misc")]
     public Collider2D CrouchCollider;
     public ControllerEvents Events;
     
     // INPUT VARIABLES
-    float InputX = 0; // stores AD
+    Vector2 InputMove; // stores AD
     bool InputJump = false; //store Jump
     bool InputJumpBuffer = false; //store Jump
     bool InputCrouch = false; //store Crouch
-    bool InputLock = false; //store Lock
     
 
     // STATE VARIABLES
+    Vector2 velocity;
     bool isGrounded = false;
     bool p_isGrounded = false;
     bool isGroundedCayote = false;
@@ -57,17 +58,17 @@ public class CharacterController2D : MonoBehaviour
     bool isSuperSonic = false;
     bool p_isSuperSonic = false;
 
-    bool isWalled = false;
+    bool isWalledLeft = false;
+    bool isWalledRight = false;
     
     void Start()
     {
         RB = GetComponent<Rigidbody2D>();
     }
 
-    public void SetInput(float _InputMoveX,bool _InputJump,bool _InputCrouch,bool _InputLock)
+    public void SetInput(Vector2 _InputMove,bool _InputJump,bool _InputCrouch)
     {
-        InputLock = _InputLock;
-        InputX = _InputMoveX;
+        InputMove = _InputMove;
         InputJump = _InputJump;
         if(InputJump)
         {
@@ -106,14 +107,15 @@ public class CharacterController2D : MonoBehaviour
 
     void WallCheck()
     {
-        isWalled = Physics2D.OverlapCircle(WallCheckPoint.position,CheckRadius,WhatIsGround) && InputLock;
+        isWalledLeft = Physics2D.OverlapCircle(WallCheckPointLeft.position,CheckRadius,WhatIsGround) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
+        isWalledRight = Physics2D.OverlapCircle(WallCheckPointRight.position,CheckRadius,WhatIsGround) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
     }
 
     void CheckGroundCeil()
     {
         isCrouching = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
         
-        if(jumpTimer < config.JumpCooldownMS/1000)return;
+        // if(jumpTimer < config.JumpCooldownMS/1000)return; WHY WAS THIS HERE???
 
         isGrounded = Physics2D.OverlapCircle(GroundCheckPoint.position,CheckRadius,WhatIsGround);
         if(isGrounded && !p_isGrounded)
@@ -150,7 +152,7 @@ public class CharacterController2D : MonoBehaviour
         CheckGroundCeil();
         WallCheck();
         if(InputCrouch)isCrouching = true;
-        Vector2 velocity = new Vector2(Vector2.Dot(transform.right,RB.velocity),Vector2.Dot(transform.up,RB.velocity));
+        velocity = new Vector2(Vector2.Dot(transform.right,RB.velocity),Vector2.Dot(transform.up,RB.velocity));
 
         if(!isSliding && isCrouching && isGrounded && Mathf.Abs(velocity.x) > config.MaxVelocity * config.SlideStartThreshold)
         {
@@ -176,20 +178,20 @@ public class CharacterController2D : MonoBehaviour
             }
             else if(isCrouching)
             {
-                velocity.x += (config.MaxVelocity * config.CrouchSpeedCoef * InputX - velocity.x)/config.Smoothing;
+                velocity.x += (config.MaxVelocity * config.CrouchSpeedCoef * InputMove.x - velocity.x)/config.Smoothing;
             }
             else
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x)*config.MaxVelocityDampingCoef,config.MaxVelocity);//Don't slow down if going fast
-                velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing;
+                velocity.x += (TargetVelocity * InputMove.x - velocity.x)/config.Smoothing;
             }
         }
         else//Air Movement
         {
-            if(InputX != 0 && !InputLock)//To preserve momentum
+            if(InputMove.x != 0 && !(isWalledLeft || isWalledRight))//To pres erve momentum
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
-                velocity.x += (TargetVelocity * InputX - velocity.x)/config.Smoothing*config.AirControlCoef;
+                velocity.x += (TargetVelocity * InputMove.x - velocity.x)/config.Smoothing*config.AirControlCoef;
             }
         }
         
@@ -283,14 +285,24 @@ public class CharacterController2D : MonoBehaviour
         }
 
         //Wall Login
-        if(isWalled)
+        if(isWalledLeft || isWalledRight)
         {
-            if(velocity.y < 0)velocity.y*=config.WallSlideFactor;
+            if(velocity.y < 0)
+            {
+                if(InputMove.y >= 0)
+                    velocity.y*=config.WallSlideFactor;
+                else
+                    velocity.y*=config.WallSlideFactor + (1-config.WallSlideFactor)/1.2f;
+
+            }
             if(InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
             {
-                velocity.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio));
-                velocity.x = (config.MaxVelocity * config.WallJumpSpeedRatio * -transform.localScale.x);
-                        
+                Vector2 jumpVector = Vector2.zero; 
+                jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio));
+                jumpVector.x = (config.MaxVelocity * -config.WallJumpSpeedRatio * (isWalledLeft?-1:1));
+                
+                velocity = (jumpVector.normalized + Vector2.up * InputMove.y).normalized * jumpVector.magnitude;
+
                 ResetJumpVars();
             }
         }
@@ -312,7 +324,8 @@ public class CharacterController2D : MonoBehaviour
         Gizmos.color = new Color(1, 1, 0, 0.75F);
         Gizmos.DrawSphere(GroundCheckPoint.position, CheckRadius);
         Gizmos.DrawSphere(CeilingCheckPoint.position, CheckRadius);
-        Gizmos.DrawSphere(WallCheckPoint.position, CheckRadius);
+        Gizmos.DrawSphere(WallCheckPointLeft.position, CheckRadius);
+        Gizmos.DrawSphere(WallCheckPointRight.position, CheckRadius);
     }
 
     public bool GetIsGrounded()
@@ -329,7 +342,7 @@ public class CharacterController2D : MonoBehaviour
     }
     public bool GetIsWalled()
     {
-        return isWalled;
+        return isWalledLeft || isWalledRight;
     }
     public float GetXSpeed()
     {
@@ -338,5 +351,15 @@ public class CharacterController2D : MonoBehaviour
     public float GetYSpeed()
     {
         return Vector2.Dot(transform.up,RB.velocity);
+    }
+    public int GetIsWalledDir()
+    {
+        if(!isWalledLeft && !isWalledRight || isWalledLeft && isWalledRight)
+        {
+            return 0;
+        }
+        if(isWalledLeft)return -1;
+        if(isWalledRight)return 1;
+        return 0;
     }
 }
