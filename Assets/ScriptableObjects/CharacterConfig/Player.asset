@@ -29,8 +29,8 @@ MonoBehaviour:
   WallSlideFactor: 0.8
   WallJumpSpeedRatio: 1
   WallJumpHeightRatio: 1
-  PerfectDelayMS: 500
-  PerfectWindowMS: 50
+  PerfectDelayMS: 450
+  PerfectWindowMS: 60
   ChargeJumpTimeMS: 500
   CayoteTimeMS: 100
   JumpCooldownMS: 500

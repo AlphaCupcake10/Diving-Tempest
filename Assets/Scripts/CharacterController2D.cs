@@ -26,6 +26,7 @@ public class CharacterController2D : MonoBehaviour
 
     [Header("Checks")]
     public LayerMask WhatIsGround;
+    public LayerMask WhatIsWall;
     public float CheckRadius = .2f;
     public Transform GroundCheckPoint;
     public Transform CeilingCheckPoint;
@@ -83,6 +84,7 @@ public class CharacterController2D : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if(config == null)return;
         CheckForSuperSonic();
         Move();
     }
@@ -107,17 +109,17 @@ public class CharacterController2D : MonoBehaviour
 
     void WallCheck()
     {
-        isWalledLeft = Physics2D.OverlapCircle(WallCheckPointLeft.position,CheckRadius,WhatIsGround) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
-        isWalledRight = Physics2D.OverlapCircle(WallCheckPointRight.position,CheckRadius,WhatIsGround) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
+        if(WallCheckPointLeft) isWalledLeft = Physics2D.OverlapCircle(WallCheckPointLeft.position,CheckRadius,WhatIsWall) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
+        if(WallCheckPointRight) isWalledRight = Physics2D.OverlapCircle(WallCheckPointRight.position,CheckRadius,WhatIsWall) /*&& (Mathf.Sign(velocity.x) * InputMove.x == 1)*/;
     }
 
     void CheckGroundCeil()
     {
-        isCrouching = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
+        if(CeilingCheckPoint)isCrouching = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
         
         // if(jumpTimer < config.JumpCooldownMS/1000)return; WHY WAS THIS HERE???
 
-        isGrounded = Physics2D.OverlapCircle(GroundCheckPoint.position,CheckRadius,WhatIsGround);
+        if(GroundCheckPoint)isGrounded = Physics2D.OverlapCircle(GroundCheckPoint.position,CheckRadius,WhatIsGround);
         if(isGrounded && !p_isGrounded)
         {
             Events.onLand.Invoke();
@@ -188,14 +190,14 @@ public class CharacterController2D : MonoBehaviour
         }
         else//Air Movement
         {
-            if(InputMove.x != 0 && !(isWalledLeft || isWalledRight))//To pres erve momentum
+            if(InputMove.x != 0 /*&& !(isWalledLeft || isWalledRight)*/)//To preserve momentum
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
                 velocity.x += (TargetVelocity * InputMove.x - velocity.x)/config.Smoothing*config.AirControlCoef;
             }
         }
-        
-        bool willBonk = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
+        bool willBonk = false;
+        if(CeilingCheckPoint) willBonk = Physics2D.OverlapCircle(CeilingCheckPoint.position,CheckRadius,WhatIsGround);
 
         // JUMPING LOGICS BELOW
         if(!isSpecialJumpReady && isGroundedCayote && !willBonk)
@@ -289,7 +291,7 @@ public class CharacterController2D : MonoBehaviour
         {
             if(velocity.y < 0)
             {
-                if(InputMove.y >= 0)
+                if(!InputCrouch)
                     velocity.y*=config.WallSlideFactor;
                 else
                     velocity.y*=config.WallSlideFactor + (1-config.WallSlideFactor)/1.2f;
@@ -322,10 +324,10 @@ public class CharacterController2D : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(1, 1, 0, 0.75F);
-        Gizmos.DrawSphere(GroundCheckPoint.position, CheckRadius);
-        Gizmos.DrawSphere(CeilingCheckPoint.position, CheckRadius);
-        Gizmos.DrawSphere(WallCheckPointLeft.position, CheckRadius);
-        Gizmos.DrawSphere(WallCheckPointRight.position, CheckRadius);
+        if(GroundCheckPoint)Gizmos.DrawSphere(GroundCheckPoint.position, CheckRadius);
+        if(CeilingCheckPoint)Gizmos.DrawSphere(CeilingCheckPoint.position, CheckRadius);
+        if(WallCheckPointLeft)Gizmos.DrawSphere(WallCheckPointLeft.position, CheckRadius);
+        if(WallCheckPointRight)Gizmos.DrawSphere(WallCheckPointRight.position, CheckRadius);
     }
 
     public bool GetIsGrounded()
@@ -342,7 +344,7 @@ public class CharacterController2D : MonoBehaviour
     }
     public bool GetIsWalled()
     {
-        return isWalledLeft || isWalledRight;
+        return (isWalledLeft || isWalledRight) && !isGroundedCayote;
     }
     public float GetXSpeed()
     {

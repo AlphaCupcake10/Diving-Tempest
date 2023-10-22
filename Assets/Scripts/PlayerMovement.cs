@@ -61,16 +61,23 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateFlip()
     {
-        Flip(controller.GetXSpeed(),controller.GetIsWalledDir(),controller.GetIsGrounded());
+        if(controller.GetIsWalled())
+        {
+            Flip(controller.GetIsWalledDir(),controller.GetIsWalledDir(),controller.GetIsGrounded());
+        }
+        else
+        {
+            Flip(controller.GetXSpeed(),controller.GetIsWalledDir(),controller.GetIsGrounded());
+        }
     }
     void Flip(float X,int isWalledDir , bool isGrounded)
     {
-        if((X > 0.05f || (isWalledDir == 1 && !isGrounded)) && !facingRight)
+        if((X > 0.05f) && !facingRight)
         {
             facingRight = true;
             Graphic.localScale = new Vector3(1,1,1);
         }
-        if((X < -0.05f || (isWalledDir == -1 && !isGrounded)) && facingRight)
+        if((X < -0.05f) && facingRight)
         {
             facingRight = false;
             Graphic.localScale = new Vector3(-1,1,1);
