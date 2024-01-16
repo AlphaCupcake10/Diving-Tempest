@@ -32,13 +32,17 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if(gravity)
         transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.GetGravityAngle()),SlerpFactor);
         
-        if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
+        // if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
 
         if(movementEnabled)
         {
-            controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
+            if(gravity?.GetGravityAngle() == 180)
+                controller.SetInput(new Vector2(-input.MovementAxis.x,input.MovementAxis.y),input.Jump,input.Crouch);
+            else
+                controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
         }
         else
         {

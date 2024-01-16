@@ -190,7 +190,7 @@ public class CharacterController2D : MonoBehaviour
         }
         else//Air Movement
         {
-            if(InputMove.x != 0 /*&& !(isWalledLeft || isWalledRight)*/)//To preserve momentum
+            if(InputMove.x != 0)//To preserve momentum
             {
                 float TargetVelocity = Mathf.Max(Mathf.Abs(velocity.x),config.MaxVelocity);//Don't slow down if going fast
                 velocity.x += (TargetVelocity * InputMove.x - velocity.x)/config.Smoothing*config.AirControlCoef;
@@ -286,25 +286,33 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        //Wall Login
-        if(isWalledLeft || isWalledRight)
+        //Wall Logic
+        else if(isWalledLeft || isWalledRight)
         {
-            if(velocity.y < 0)
+            if(velocity.y <= 0)
             {
-                if(!InputCrouch)
-                    velocity.y*=config.WallSlideFactor;
+                if(InputMove.y < 0)
+                    velocity.y*=Mathf.Clamp01(config.WallSlideFactor*1.85f);
                 else
-                    velocity.y*=config.WallSlideFactor + (1-config.WallSlideFactor)/1.2f;
-
+                    velocity.y*=config.WallSlideFactor;
             }
-            if(InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
+            if(/*InputJumpBuffer*/ ((isWalledLeft && InputMove.x > 0) || (isWalledRight && InputMove.x < 0)) && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
+            {
+                Vector2 jumpVector = Vector2.zero; 
+                if(!InputCrouch)
+                {
+                    jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio/2));
+                }
+                jumpVector.x = (config.MaxVelocity * config.WallJumpSpeedRatio * (isWalledLeft?1:-1));
+                velocity = jumpVector;
+                ResetJumpVars();
+            }
+            else if(InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
             {
                 Vector2 jumpVector = Vector2.zero; 
                 jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio));
-                jumpVector.x = (config.MaxVelocity * -config.WallJumpSpeedRatio * (isWalledLeft?-1:1));
-                
-                velocity = (jumpVector.normalized + Vector2.up * InputMove.y).normalized * jumpVector.magnitude;
-
+                jumpVector.x = (config.MaxVelocity * config.WallJumpSpeedRatio * (isWalledLeft?1:-1));
+                velocity = jumpVector;
                 ResetJumpVars();
             }
         }
