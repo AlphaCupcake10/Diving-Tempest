@@ -7,6 +7,7 @@ using UnityEngine;
 public class Telekinesis : MonoBehaviour
 {
     PlayerInput input;
+    public GameObject Crosshair;
     public LayerMask physicsObjects;
     public Vector2 throwDirection;
     public float range = 1;
@@ -32,6 +33,8 @@ public class Telekinesis : MonoBehaviour
         }
         if(grabbed != null)
         {
+            if(!Crosshair.activeInHierarchy)
+                Crosshair.SetActive(true);
             UpdateGrabbed();
             if(input.throwKey)
             {
@@ -41,6 +44,11 @@ public class Telekinesis : MonoBehaviour
             {
                 Throw(false);
             }
+        }
+        else
+        {
+            if(Crosshair.activeInHierarchy)
+                Crosshair.SetActive(false);
         }
     }
 
@@ -55,6 +63,8 @@ public class Telekinesis : MonoBehaviour
         throwDirection -= new Vector2(.5f,.5f);
         throwDirection.Normalize();
         Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
+
+        Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(throwDirection.y,throwDirection.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
 
         Vector2 oldPosition = grabbed.position;
         oldPosition += (TargetPosition-grabbed.position)/10;

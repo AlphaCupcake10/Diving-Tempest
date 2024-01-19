@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject Trail;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +18,7 @@ public class Projectile : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D col)
     {
+        Destroy(Trail,1);
         transform.DetachChildren();
         Destroy(gameObject);
     }

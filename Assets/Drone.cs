@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(NPC_AI))]
 public class Drone : MonoBehaviour
@@ -9,6 +10,8 @@ public class Drone : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
     public float turnRange = 1;
+    public float stopDistance = 3;
+    bool isFollowing = true;
     public Config config = new Config();
     public Transform ShootPoint;
     public GameObject Projectile;
@@ -17,6 +20,8 @@ public class Drone : MonoBehaviour
     Vector2 dir;
 
     bool isGrabbed = false;
+
+    public UnityEvent OnShoot;
 
     public void SetGrabbedState(bool val)
     {
@@ -37,6 +42,8 @@ public class Drone : MonoBehaviour
     }
     void Update()
     {
+        if(AI.target == null)return;
+
         spriteIndex = sprites.Length/2 + Mathf.RoundToInt((AI.target.position.x - transform.position.x)/turnRange);
         spriteIndex = Mathf.Clamp(spriteIndex,0,sprites.Length-1);
         spriteRenderer.sprite = sprites[spriteIndex];
@@ -45,6 +52,18 @@ public class Drone : MonoBehaviour
         transform.localScale = new Vector3(Mathf.Sign(dir.x)*((isGrabbed)?-1:1),1,1);
         AI.rb.MoveRotation(Mathf.Atan2(dir.y*Mathf.Sign(dir.x),Mathf.Abs(dir.x))*Mathf.Rad2Deg);
         CallShoot();
+
+        float distanceSqr = Vector3.SqrMagnitude(transform.position-AI.target.position);
+        if(isFollowing && distanceSqr < stopDistance * stopDistance)
+        {
+            AI.StopFollowing();
+            isFollowing = false;
+        }
+        if(!isFollowing && distanceSqr >= stopDistance * stopDistance)
+        {
+            AI.StartFollowing();
+            isFollowing = true;
+        }
     }
 
     float timer = 0;
@@ -63,6 +82,7 @@ public class Drone : MonoBehaviour
         GameObject projectile = Instantiate(Projectile,ShootPoint.position,ShootPoint.rotation);
         Rigidbody2D RB = projectile.GetComponent<Rigidbody2D>();
         RB.AddForce(ShootPoint.right*Mathf.Sign(dir.x)*config.Force*((isGrabbed)?-1:1));
-        Destroy(projectile,config.LifeTime);
+        // Destroy(projectile,config.LifeTime); TODO CHANGE
+        OnShoot.Invoke();
     }
 }

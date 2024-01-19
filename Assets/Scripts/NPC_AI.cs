@@ -26,17 +26,15 @@ public class NPC_AI : MonoBehaviour
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        StartFollowing();
+        InvokeRepeating("UpdatePath",0,.05f);
     }
 
     public void StartFollowing()
     {
-        InvokeRepeating("UpdatePath",0,.05f);
-        FollowTarget = false;
+        FollowTarget = true;
     }
     public void StopFollowing()
     {
-        CancelInvoke("UpdatePath");
         FollowTarget = false;
     }
 
@@ -83,7 +81,7 @@ public class NPC_AI : MonoBehaviour
 
 
 
-        if(distance < nextWaypointDistance)
+        if(distance < nextWaypointDistance && FollowTarget)
         {
             currentWaypoint++;
         }

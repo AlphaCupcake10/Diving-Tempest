@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class ControllerEvents
 {
     public UnityEvent onJump;
+    public UnityEvent onSlide;
     public UnityEvent onSpecialJump;
     public UnityEvent onSpecialJumpReady;
     public UnityEvent onSpecialJumpCancel;
@@ -159,6 +160,7 @@ public class CharacterController2D : MonoBehaviour
         if(!isSliding && isCrouching && isGrounded && Mathf.Abs(velocity.x) > config.MaxVelocity * config.SlideStartThreshold)
         {
             isSliding = true;
+            Events.onSlide.Invoke();
         }
         if(!isGroundedCayote)
         {
