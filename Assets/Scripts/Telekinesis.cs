@@ -25,24 +25,21 @@ public class Telekinesis : MonoBehaviour
 
     void Update()
     {
-        if(input.grabKey)
+        if(input.grabKey && grabbed == null)
         {
             GrabNearest();
             return;
         }
         if(grabbed != null)
         {
+            UpdateGrabbed();
             if(input.throwKey)
             {
                 Throw(true);
             }
-            else if(input.grabKey)
+            if(input.grabKey)
             {
                 Throw(false);
-            }
-            else
-            {
-                UpdateGrabbed();
             }
         }
     }
@@ -52,8 +49,10 @@ public class Telekinesis : MonoBehaviour
         grabbed.velocity = Vector2.zero;
 
         grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
-
-        throwDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
+        throwDirection = Input.mousePosition;
+        throwDirection.x /= Screen.width;
+        throwDirection.y /= Screen.height;
+        throwDirection -= new Vector2(.5f,.5f);
         throwDirection.Normalize();
         Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
@@ -61,10 +60,10 @@ public class Telekinesis : MonoBehaviour
         oldPosition += (TargetPosition-grabbed.position)/10;
         grabbed.position = (oldPosition);
 
-        if(fullyGrabbed && (grabbed.position - (Vector2)transform.position).sqrMagnitude < minGrabDistance*minGrabDistance *.75f)
-        {
-            Throw(false);
-        }
+        // if(fullyGrabbed && (grabbed.position - (Vector2)transform.position).sqrMagnitude < minGrabDistance*minGrabDistance *.75f)
+        // {
+        //     Throw(false);
+        // }
     }
 
     private void GrabNearest()
@@ -88,6 +87,7 @@ public class Telekinesis : MonoBehaviour
     private void Throw(bool addForce)
     {
         if(addForce)grabbed.AddForce(throwDirection*force);
+        grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed = null;
     }
     private void Grab(Rigidbody2D rigidbody)
@@ -96,5 +96,6 @@ public class Telekinesis : MonoBehaviour
         CancelInvoke("ResetGrabbedStatus");
         fullyGrabbed = false;
         Invoke("ResetGrabbedStatus",.5f);
+        rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
     }
 }

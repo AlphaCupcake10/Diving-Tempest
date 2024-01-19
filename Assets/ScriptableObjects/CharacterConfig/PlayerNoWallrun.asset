@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a5fb1790d008b8448fac5cb76f8d159, type: 3}
-  m_Name: Player
+  m_Name: PlayerNoWallrun
   m_EditorClassIdentifier: 
   MaxVelocity: 4.5
   JumpHeight: 1.6
@@ -26,9 +26,9 @@ MonoBehaviour:
   SlideJumpHeightRatio: 1
   ChargedJumpHeightRatio: 1.7
   ImperfectRatio: 0.8
-  WallSlideFactor: 0.5
-  WallJumpSpeedRatio: 1
-  WallJumpHeightRatio: 1
+  WallSlideFactor: 1
+  WallJumpSpeedRatio: 0
+  WallJumpHeightRatio: 0
   PerfectDelayMS: 450
   PerfectWindowMS: 60
   ChargeJumpTimeMS: 500

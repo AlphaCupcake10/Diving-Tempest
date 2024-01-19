@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using System;
 
-public class Companion : MonoBehaviour
+public class NPC_AI : MonoBehaviour
 {
     public Transform target;
 
@@ -14,18 +15,31 @@ public class Companion : MonoBehaviour
     int currentWaypoint = 0;
     bool reachedEndOfPath = false;
 
+    bool FollowTarget = true;
 
     Seeker seeker;
-    Rigidbody2D rb;
+    [HideInInspector]
+    public Rigidbody2D rb;
 
     // Start is called before the first frame update
     void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        
-        InvokeRepeating("UpdatePath",0,.05f);
+        StartFollowing();
     }
+
+    public void StartFollowing()
+    {
+        InvokeRepeating("UpdatePath",0,.05f);
+        FollowTarget = false;
+    }
+    public void StopFollowing()
+    {
+        CancelInvoke("UpdatePath");
+        FollowTarget = false;
+    }
+
 
     void UpdatePath()
     {
