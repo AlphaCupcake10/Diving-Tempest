@@ -6,18 +6,20 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Telekinesis : MonoBehaviour
 {
-    PlayerInput input;
     public GameObject Crosshair;
     public LayerMask physicsObjects;
-    public Vector2 throwDirection;
     public float range = 1;
-    public float minGrabDistance = 1;
+    public float autoAimRadius = 1;
+    public float minGrabDistance = 1.5f;
     public float weightLimit = 30;
-    float grabDistance = 1;
-
+    public float force = 10000;
+    [Space]
     public Rigidbody2D grabbed;
-    public bool fullyGrabbed = false;
-    public float force;
+
+    float grabDistance = 1;
+    PlayerInput input;
+    Vector2 throwDirection;
+
 
     void Start()
     {
@@ -57,28 +59,40 @@ public class Telekinesis : MonoBehaviour
         grabbed.velocity = Vector2.zero;
 
         grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
-        throwDirection = Input.mousePosition;
-        throwDirection.x /= Screen.width;
-        throwDirection.y /= Screen.height;
-        throwDirection -= new Vector2(.5f,.5f);
-        throwDirection.Normalize();
+
+        throwDirection = AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0)-transform.position).normalized;
+
         Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
         Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(throwDirection.y,throwDirection.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
 
         Vector2 oldPosition = grabbed.position;
-        oldPosition += (TargetPosition-grabbed.position)/10;
+        oldPosition += (TargetPosition-grabbed.position)/2;
         grabbed.position = (oldPosition);
-
-        // if(fullyGrabbed && (grabbed.position - (Vector2)transform.position).sqrMagnitude < minGrabDistance*minGrabDistance *.75f)
-        // {
-        //     Throw(false);
-        // }
     }
-
+    public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        Plane xy = new Plane(Vector3.forward, new Vector3(0, 0, z));
+        float distance;
+        xy.Raycast(ray, out distance);
+        Vector3 MousePoint = ray.GetPoint(distance);
+        return MousePoint;
+    }
+    public Vector3 AutoAim(Vector3 MousePoint)
+    {
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(MousePoint,autoAimRadius,Vector2.zero,autoAimRadius,physicsObjects);
+        if(hits.Length == 0)return MousePoint;
+        RaycastHit2D closest = hits[0];
+        foreach(RaycastHit2D hit in hits)
+        {
+            if(closest.distance > hit.distance)closest = hit;
+        }
+        return closest.collider.transform.position;
+    }
     private void GrabNearest()
     {
-        RaycastHit2D[]hits = Physics2D.CircleCastAll(transform.position,range,transform.forward,range,physicsObjects);
+        RaycastHit2D[]hits = Physics2D.CircleCastAll(transform.position+(GetWorldPositionOnPlane(Input.mousePosition,0)-transform.position).normalized/2,range,transform.forward,range,physicsObjects);
         if(hits.Length == 0)return;
         RaycastHit2D closest = hits[0];
         foreach(RaycastHit2D hit in hits)
@@ -90,22 +104,15 @@ public class Telekinesis : MonoBehaviour
         }
         Grab(closest.rigidbody);
     }
-    void ResetGrabbedStatus()
-    {
-        fullyGrabbed = true;
-    }
     private void Throw(bool addForce)
     {
-        if(addForce)grabbed.AddForce(throwDirection*force);
+        if(addForce)grabbed.AddForce(throwDirection*force / Time.timeScale);
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed = null;
     }
     private void Grab(Rigidbody2D rigidbody)
     {
         grabbed = rigidbody;
-        CancelInvoke("ResetGrabbedStatus");
-        fullyGrabbed = false;
-        Invoke("ResetGrabbedStatus",.5f);
         rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
     }
 }

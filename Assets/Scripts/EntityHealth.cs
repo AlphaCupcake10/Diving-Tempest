@@ -5,8 +5,10 @@ using UnityEngine.Events;
 
 public class EntityHealth : MonoBehaviour
 {
-    public float MaxHealth = 100;
-    public float Health = 100;
+    public float MaxHealth = 1;
+    public float Health = 1;
+    public float ThresholdForce = 10000;
+    public float ThresholdForceDamage = 1;
 
     public UnityEvent onHit;
     public UnityEvent onHeal;
@@ -20,7 +22,7 @@ public class EntityHealth : MonoBehaviour
     }
     public void DeltaHealth(float delta,Vector3 Direction)
     {
-        RB.AddForce((Direction+transform.up*Direction.magnitude));
+        RB?.AddForce((Direction+transform.up*Direction.magnitude));
         DeltaHealth(delta);
     }
     public void DeltaHealth(float delta)
@@ -54,5 +56,22 @@ public class EntityHealth : MonoBehaviour
     public void Die()
     {
         onDie.Invoke();
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Rigidbody2D otherRigidbody = collision.collider.GetComponent<Rigidbody2D>();
+        if (otherRigidbody != null)
+        {
+            // Calculate the collision force
+            Vector2 collisionForce = collision.relativeVelocity * otherRigidbody.mass;
+            // print(collisionForce.magnitude);
+
+            // Log the collision force
+            if(collisionForce.sqrMagnitude > ThresholdForce * ThresholdForce)
+            {
+                DeltaHealth(-ThresholdForceDamage);
+            }
+        }
     }
 }

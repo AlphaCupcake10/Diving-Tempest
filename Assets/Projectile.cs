@@ -5,6 +5,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public GameObject Trail;
+    public float Damage = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,5 +22,7 @@ public class Projectile : MonoBehaviour
         Destroy(Trail,1);
         transform.DetachChildren();
         Destroy(gameObject);
+
+        col?.collider?.GetComponent<EntityHealth>()?.DeltaHealth(Damage,GetComponent<Rigidbody2D>().velocity);
     }
 }

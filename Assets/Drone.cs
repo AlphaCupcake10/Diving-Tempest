@@ -10,67 +10,92 @@ public class Drone : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
     public float turnRange = 1;
-    public float stopDistance = 3;
-    bool isFollowing = true;
-    public Config config = new Config();
+
+    [Space]
+
+    public GunConfig config = new GunConfig();
+    [System.Serializable]
+    public class GunConfig
+    {
+        public float Force = 1000f;
+        public float LifeTime = 1;
+        public float FireDelay = .1f;
+    }
+
+    [Space]
+
     public Transform ShootPoint;
     public GameObject Projectile;
+    public GameObject Explosion;
+    public UnityEvent OnShoot;
+
+
     NPC_AI AI;
     int spriteIndex = 0;
     Vector2 dir;
-
     bool isGrabbed = false;
+    public bool isDetected = false;
+    public float DetectionRange = 10;
+    public float ShootRange = 8;
+    public float FallBackRange = 4;
 
-    public UnityEvent OnShoot;
 
     public void SetGrabbedState(bool val)
     {
         isGrabbed = val;
     }
 
-    [System.Serializable]
-    public class Config
-    {
-        public float Force = 1000f;
-        public float LifeTime = 1;
-        public float fireDelay = .1f;
-    }
-
     void Start()
     {
         AI = GetComponent<NPC_AI>();
+        AI.StopFollowing();
     }
+
+
     void Update()
     {
         if(AI.target == null)return;
 
+        float Distance = Vector3.Distance(AI.target.position,transform.position);
+        
+        if(Distance < DetectionRange)
+        {
+            isDetected = true;
+        }
+
+        if(isDetected)
+        {
+            RotateGraphic();
+            if(Distance < ShootRange)CallShoot();
+            SetFollowingState(Distance > FallBackRange);
+        }
+    }
+
+    bool isFollowing = false;
+    public void SetFollowingState(bool val)
+    {
+        if(isFollowing == val)return;
+        isFollowing = val;
+        if(isFollowing)AI.StartFollowing();
+        if(!isFollowing)AI.StopFollowing();
+    }
+
+    private void RotateGraphic()
+    {
         spriteIndex = sprites.Length/2 + Mathf.RoundToInt((AI.target.position.x - transform.position.x)/turnRange);
         spriteIndex = Mathf.Clamp(spriteIndex,0,sprites.Length-1);
         spriteRenderer.sprite = sprites[spriteIndex];
 
         dir = AI.target.position-transform.position;
         transform.localScale = new Vector3(Mathf.Sign(dir.x)*((isGrabbed)?-1:1),1,1);
-        AI.rb.MoveRotation(Mathf.Atan2(dir.y*Mathf.Sign(dir.x),Mathf.Abs(dir.x))*Mathf.Rad2Deg);
-        CallShoot();
-
-        float distanceSqr = Vector3.SqrMagnitude(transform.position-AI.target.position);
-        if(isFollowing && distanceSqr < stopDistance * stopDistance)
-        {
-            AI.StopFollowing();
-            isFollowing = false;
-        }
-        if(!isFollowing && distanceSqr >= stopDistance * stopDistance)
-        {
-            AI.StartFollowing();
-            isFollowing = true;
-        }
+        AI?.rb?.MoveRotation(Mathf.Atan2(dir.y*Mathf.Sign(dir.x),Mathf.Abs(dir.x))*Mathf.Rad2Deg);
     }
 
     float timer = 0;
     private void CallShoot()
     {
         timer+=Time.deltaTime;
-        if(timer > config.fireDelay)
+        if(timer > config.FireDelay)
         {
             timer = 0;
             Shoot();
@@ -81,8 +106,14 @@ public class Drone : MonoBehaviour
     {
         GameObject projectile = Instantiate(Projectile,ShootPoint.position,ShootPoint.rotation);
         Rigidbody2D RB = projectile.GetComponent<Rigidbody2D>();
-        RB.AddForce(ShootPoint.right*Mathf.Sign(dir.x)*config.Force*((isGrabbed)?-1:1));
+        RB.AddForce(ShootPoint.right*Mathf.Sign(dir.x)*config.Force / Time.timeScale *((isGrabbed)?-1:1));
         // Destroy(projectile,config.LifeTime); TODO CHANGE
         OnShoot.Invoke();
+    }
+
+    public void Explode()
+    {
+        Destroy(Instantiate(Explosion,transform.position,transform.rotation),1);
+        Destroy(gameObject);
     }
 }

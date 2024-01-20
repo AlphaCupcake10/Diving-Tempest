@@ -22,7 +22,7 @@ public class NPC_AI : MonoBehaviour
     public Rigidbody2D rb;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
@@ -41,6 +41,7 @@ public class NPC_AI : MonoBehaviour
 
     void UpdatePath()
     {
+        if(!target)return;
         if(seeker.IsDone())
         {
             seeker.StartPath(rb.position,target.position, OnPathComplete);

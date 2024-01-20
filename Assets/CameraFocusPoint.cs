@@ -8,15 +8,16 @@ public class CameraFocusPoint : MonoBehaviour
     public float Range = 10;
     void Start()
     {
-        CameraController.Instance.AddPoint(this);
+        CameraController.Instance?.AddPoint(this);
     }
     void onDisable()
     {
-        CameraController.Instance.RemovePoint(this);
+        CameraController.Instance?.RemovePoint(this);
     }
-    void onDestroy()
+    void OnTransformParentChanged()
     {
-        CameraController.Instance.RemovePoint(this);
+        Debug.Log("CALLED");
+        CameraController.Instance?.RemovePoint(this);
     }
     void OnDrawGizmosSelected()
     {

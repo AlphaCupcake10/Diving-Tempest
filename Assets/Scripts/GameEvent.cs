@@ -13,6 +13,10 @@ public class GameEvent:MonoBehaviour
     {
         col?.GetComponent<Gravity>()?.SetGravityAngle(m_float);
     }
+    public void SetCheckPoint()
+    {
+        CheckpointManager.Instance.setCheckPoint((int)m_float);
+    }
     public void AddForce(Collider2D col)
     {
         col?.GetComponent<Rigidbody2D>()?.AddForce(m_vector3);

@@ -31,9 +31,9 @@ public class CameraController : MonoBehaviour
         avg += Player.transform.position * Player.Priority;
         foreach(CameraFocusPoint point in Points)
         {
+            if(point == null)continue;
             if(point == Player)continue;
             if(Vector3.Distance(transform.position,point.transform.position) > point.Range)continue;
-            if(point == null)continue;
             count += point.Priority;
             avg += point.transform.position * point.Priority;
         }
