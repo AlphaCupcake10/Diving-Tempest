@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     {
         CheckpointManager.Instance.LoadPointFromPrefs();
         player.transform.position = CheckpointManager.Instance.getCheckPointPosition();
+        CameraController.Instance.transform.position = player.transform.position;
     }
 
     public void RestartScreen()

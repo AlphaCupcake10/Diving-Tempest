@@ -215,6 +215,14 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 0b885476eb3295b489852e4f8130381b, type: 3}
     volume: 0.5
     spatialBlend: 0
+  - clips:
+    - {fileID: 8300000, guid: b8c179e466c21bd42ae5c46148f5cdac, type: 3}
+    volume: 0.5
+    spatialBlend: 0
+  - clips:
+    - {fileID: 8300000, guid: 4d916ad7713a5594aa128f14483d56d3, type: 3}
+    volume: 0.2
+    spatialBlend: 0
 --- !u!1 &1175199886648362494
 GameObject:
   m_ObjectHideFlags: 0
@@ -20232,11 +20240,41 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   range: 1.25
-  autoAimRadius: 1
-  minGrabDistance: 1
+  autoAimRadius: 0.5
+  minGrabDistance: 0.75
   weightLimit: 30
   force: 10000
   grabbed: {fileID: 0}
+  OnGrab:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2278594964118027006}
+        m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
+        m_MethodName: PlaySoundGroup
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnThrow:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2278594964118027006}
+        m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
+        m_MethodName: PlaySoundGroup
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 6
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &127804114599786880
 MonoBehaviour:
   m_ObjectHideFlags: 0

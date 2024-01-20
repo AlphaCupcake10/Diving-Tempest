@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TimeManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class TimeManager : MonoBehaviour
 
     // Original fixed delta time, used to reset it after slow motion
     private float originalFixedDeltaTime;
+
+    public UnityEvent onSlowMotion;
 
     void Start()
     {
@@ -36,6 +39,7 @@ public class TimeManager : MonoBehaviour
     public void SlowMotion(float slowFactor)
     {
         SetTimeScale(slowFactor);
+        onSlowMotion.Invoke();
     }
     void OnDestroy()
     {

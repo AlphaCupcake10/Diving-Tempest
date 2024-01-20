@@ -425,7 +425,7 @@ MonoBehaviour:
         m_CallState: 2
   isDetected: 0
   DetectionRange: 10
-  ShootRange: 8
+  ShootRange: 10
   FallBackRange: 4
 --- !u!114 &8852141693084635582
 MonoBehaviour:

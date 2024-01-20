@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerInput))]
 public class Telekinesis : MonoBehaviour
@@ -15,6 +16,9 @@ public class Telekinesis : MonoBehaviour
     public float force = 10000;
     [Space]
     public Rigidbody2D grabbed;
+    [Space]
+    public UnityEvent OnGrab;
+    public UnityEvent OnThrow;
 
     float grabDistance = 1;
     PlayerInput input;
@@ -60,7 +64,7 @@ public class Telekinesis : MonoBehaviour
 
         grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
 
-        throwDirection = AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0)-transform.position).normalized;
+        throwDirection = (AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0))-transform.position).normalized;
 
         Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
@@ -86,8 +90,10 @@ public class Telekinesis : MonoBehaviour
         RaycastHit2D closest = hits[0];
         foreach(RaycastHit2D hit in hits)
         {
+            if(hit.rigidbody == grabbed)continue;
             if(closest.distance > hit.distance)closest = hit;
         }
+        if(closest.rigidbody == grabbed)return MousePoint;
         return closest.collider.transform.position;
     }
     private void GrabNearest()
@@ -106,12 +112,14 @@ public class Telekinesis : MonoBehaviour
     }
     private void Throw(bool addForce)
     {
+        OnThrow.Invoke();
         if(addForce)grabbed.AddForce(throwDirection*force / Time.timeScale);
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed = null;
     }
     private void Grab(Rigidbody2D rigidbody)
     {
+        OnGrab.Invoke();
         grabbed = rigidbody;
         rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
     }

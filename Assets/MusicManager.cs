@@ -66,6 +66,14 @@ public class MusicManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (!audioSource.isPlaying)
+        {
+            PlayNextClip();
+        }
+    }
+
     // Method to start playing the music
     public void StartMusic()
     {
