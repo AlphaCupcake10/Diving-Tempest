@@ -16,6 +16,7 @@ public class CheckpointManager : MonoBehaviour
     {
         if(index < CheckpointIndex)return;
         CheckpointIndex = index;
+        SaveCheckPoint();
     }
 
     public Vector3 getCheckPointPosition()

@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
 
     public void RestartScreen()
     {
-        CheckpointManager.Instance.SaveCheckPoint();
         TimeManager.Instance.PauseGame();
         DiedScreen.SetActive(true);
     }

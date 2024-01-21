@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8587962190123219130}
   - component: {fileID: 3427551616900136789}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 2336260154797831585}
   - component: {fileID: 1269057348444729791}
   - component: {fileID: 3195194355806306370}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 15
+  m_Mass: 20
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0

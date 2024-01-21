@@ -22,7 +22,7 @@ public class CameraFocusPoint : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, Range);
     }
 }

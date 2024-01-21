@@ -21,8 +21,6 @@ public class PlayerMovement : MonoBehaviour
 
     bool movementEnabled = true;
     bool facingRight = true;
-    bool isSlowMotion = false;
-
     public Animator animator;
 
     void Start()
@@ -44,25 +42,6 @@ public class PlayerMovement : MonoBehaviour
                 controller.SetInput(new Vector2(-input.MovementAxis.x,input.MovementAxis.y),input.Jump,input.Crouch);
             else
                 controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
-
-            if(!controller.GetIsGrounded())
-            {
-                if(input.AimKeyDown)
-                {
-                    isSlowMotion = true;
-                    TimeManager.Instance?.SlowMotion(.05f);
-                }
-                if(input.AimKeyUp || input.throwKey)
-                {
-                    isSlowMotion = false;
-                    TimeManager.Instance?.ResumeGame();
-                }
-            }
-            if(isSlowMotion && controller.GetIsGrounded())
-            {
-                isSlowMotion = false;
-                TimeManager.Instance?.ResumeGame();
-            }
         }
         else
         {

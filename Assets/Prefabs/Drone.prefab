@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2956894144300178398}
   - component: {fileID: 6805512830155300148}
   - component: {fileID: 3011235315230751545}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9099694401901612}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: ShootPointR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7682639645899817528}
   - component: {fileID: 1581030754074638841}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 82170660600790442}
   - component: {fileID: 3344475967836159025}
   - component: {fileID: 8852141693084635582}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Drone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,6 +391,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d96c1aac43a73449b9b226ba33b623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PassThrough:
+    serializedVersion: 2
+    m_Bits: 65
   spriteRenderer: {fileID: 6805512830155300148}
   sprites:
   - {fileID: 462149967, guid: b19d3e0f5d9504b478a065aae93979d1, type: 3}
@@ -404,7 +407,7 @@ MonoBehaviour:
   config:
     Force: 6000
     LifeTime: 1
-    FireDelay: 2
+    FireDelay: 1.5
   ShootPoint: {fileID: 9099694401901612}
   Projectile: {fileID: 5217527671294023484, guid: 7513fb5d3f79f3441b56fde650a363aa, type: 3}
   Explosion: {fileID: 4143358597286329440, guid: f12c248f6117888448917616555b2af8, type: 3}

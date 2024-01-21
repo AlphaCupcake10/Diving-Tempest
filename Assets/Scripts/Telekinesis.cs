@@ -9,31 +9,58 @@ public class Telekinesis : MonoBehaviour
 {
     public GameObject Crosshair;
     public LayerMask physicsObjects;
+    public LayerMask parryAble;
     public float range = 1;
     public float autoAimRadius = 1;
     public float minGrabDistance = 1.5f;
     public float weightLimit = 30;
     public float force = 10000;
+    public float recoilMultiplier = 1.5f;
+    public float grabBufferInput = 500;
     [Space]
     public Rigidbody2D grabbed;
     [Space]
     public UnityEvent OnGrab;
     public UnityEvent OnThrow;
 
+
+    Rigidbody2D RB;
     float grabDistance = 1;
     PlayerInput input;
     Vector2 throwDirection;
+    CharacterController2D controller;
 
 
     void Start()
     {
+        controller = GetComponent<CharacterController2D>();
         input = GetComponent<PlayerInput>();
+        RB = GetComponent<Rigidbody2D>();
     }
 
+    bool grabKeyPressed = false;
+    void GrabKeyBufferUpdate()
+    {
+        grabKeyPressed = false;
+    }
     void Update()
     {
-        if(input.grabKey && grabbed == null)
+        if(input.isInputBlocked)return;
+
+        if(controller.GetIsGrounded())
         {
+            SetSlowMotionState(false);
+        }
+
+        if(input.grabKey)
+        {
+            CancelInvoke("GrabKeyBufferUpdate");
+            grabKeyPressed = true;
+            Invoke("GrabKeyBufferUpdate",grabBufferInput);
+        }
+        if(grabKeyPressed && grabbed == null)
+        {
+            GrabKeyBufferUpdate();
             GrabNearest();
             return;
         }
@@ -53,6 +80,7 @@ public class Telekinesis : MonoBehaviour
         }
         else
         {
+            SetSlowMotionState(false);
             if(Crosshair.activeInHierarchy)
                 Crosshair.SetActive(false);
         }
@@ -64,15 +92,12 @@ public class Telekinesis : MonoBehaviour
 
         grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
 
-        throwDirection = (AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0))-transform.position).normalized;
-
-        Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
-
+        throwDirection += (AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0))-RB.position)/10;
+        throwDirection.Normalize();
         Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(throwDirection.y,throwDirection.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
 
-        Vector2 oldPosition = grabbed.position;
-        oldPosition += (TargetPosition-grabbed.position)/2;
-        grabbed.position = (oldPosition);
+        Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
+        grabbed.position = (TargetPosition);
     }
     public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z)
     {
@@ -83,7 +108,7 @@ public class Telekinesis : MonoBehaviour
         Vector3 MousePoint = ray.GetPoint(distance);
         return MousePoint;
     }
-    public Vector3 AutoAim(Vector3 MousePoint)
+    public Vector2 AutoAim(Vector2 MousePoint)
     {
         RaycastHit2D[] hits = Physics2D.CircleCastAll(MousePoint,autoAimRadius,Vector2.zero,autoAimRadius,physicsObjects);
         if(hits.Length == 0)return MousePoint;
@@ -112,15 +137,38 @@ public class Telekinesis : MonoBehaviour
     }
     private void Throw(bool addForce)
     {
-        OnThrow.Invoke();
-        if(addForce)grabbed.AddForce(throwDirection*force / Time.timeScale);
+        bool wasSlowMotion = isSlowMotion;
+        SetSlowMotionState(false);
+        if(addForce)
+        {
+            OnThrow.Invoke();
+            if(wasSlowMotion)RB.velocity = Vector2.zero;
+            if((parryAble.value & (1 << grabbed.gameObject.layer)) != 0)RB.AddForce(-throwDirection*force*recoilMultiplier / Time.timeScale);
+            grabbed.AddForce(throwDirection*force / Time.timeScale);
+        }
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed = null;
     }
     private void Grab(Rigidbody2D rigidbody)
     {
+        if(!controller.GetIsGrounded() && (parryAble.value & (1 << rigidbody.gameObject.layer)) != 0)
+        {
+            SetSlowMotionState(true);
+        }
         OnGrab.Invoke();
         grabbed = rigidbody;
+        throwDirection = (grabbed.position - RB.position).normalized;
         rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
+    }
+
+    bool isSlowMotion = false;
+    void SetSlowMotionState(bool val)
+    {
+        if(isSlowMotion != val)
+        {
+            isSlowMotion = val;
+            if(val)TimeManager.Instance.SlowMotion(.05f);
+            else TimeManager.Instance.ResumeGame();
+        }
     }
 }

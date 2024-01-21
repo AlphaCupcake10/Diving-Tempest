@@ -289,7 +289,7 @@ public class CharacterController2D : MonoBehaviour
         }
 
         //Wall Logic
-        else if(isWalledLeft || isWalledRight)
+        else if((isWalledLeft || isWalledRight) && !isGrounded)
         {
             if(velocity.y <= 0)
             {
@@ -303,7 +303,7 @@ public class CharacterController2D : MonoBehaviour
                 Vector2 jumpVector = Vector2.zero; 
                 if(!InputCrouch)
                 {
-                    jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio/2));
+                    jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio/16));
                 }
                 jumpVector.x = (config.MaxVelocity * config.WallJumpSpeedRatio * (isWalledLeft?1:-1));
                 velocity = jumpVector;

@@ -7,6 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(NPC_AI))]
 public class Drone : MonoBehaviour
 {
+    public LayerMask PassThrough;
     public SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
     public float turnRange = 1;
@@ -58,9 +59,13 @@ public class Drone : MonoBehaviour
 
         float Distance = Vector3.Distance(AI.target.position,transform.position);
         
-        if(Distance < DetectionRange)
+        if(Distance < DetectionRange && !isDetected)
         {
-            isDetected = true;
+            RaycastHit2D hit = Physics2D.Raycast(ShootPoint.position,AI.target.position-transform.position,DetectionRange,PassThrough);
+            if(hit && hit.collider)
+            if(hit.collider.transform == AI.target)
+                isDetected = true;
+                
         }
 
         if(isDetected)
