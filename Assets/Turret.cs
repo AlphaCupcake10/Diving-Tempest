@@ -12,6 +12,7 @@ public class Turret : MonoBehaviour
     public GameObject Projectile;
     public GameObject Explosion;
     public UnityEvent OnShoot;
+    public UnityEvent OnCharge;
     public float ShootRange = 8;
     public Transform Target;
 
@@ -23,6 +24,7 @@ public class Turret : MonoBehaviour
         public float Force = 6000f;
         public float LifeTime = 1;
         public float FireDelay = 2f;
+        public float ChargeDelay = 1f;
     }
 
     Vector3 Direction;
@@ -48,7 +50,8 @@ public class Turret : MonoBehaviour
         if(timer > config.FireDelay)
         {
             timer = 0;
-            Shoot();
+            OnCharge.Invoke();
+            Invoke("Shoot",config.ChargeDelay);
         }
     }
 

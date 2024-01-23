@@ -298,18 +298,7 @@ public class CharacterController2D : MonoBehaviour
                 else
                     velocity.y*=config.WallSlideFactor;
             }
-            if(/*InputJumpBuffer*/ ((isWalledLeft && InputMove.x > 0) || (isWalledRight && InputMove.x < 0)) && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
-            {
-                Vector2 jumpVector = Vector2.zero; 
-                if(!InputCrouch)
-                {
-                    jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio/16));
-                }
-                jumpVector.x = (config.MaxVelocity * config.WallJumpSpeedRatio * (isWalledLeft?1:-1));
-                velocity = jumpVector;
-                ResetJumpVars();
-            }
-            else if(InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
+            if(InputJumpBuffer && jumpTimer > config.JumpCooldownMS/1000 && !willBonk)
             {
                 Vector2 jumpVector = Vector2.zero; 
                 jumpVector.y = Mathf.Sqrt(Mathf.Abs(2*Physics2D.gravity.y*config.JumpHeight*config.WallJumpHeightRatio));

@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform Graphic;
 
     [Header("Camera")]
-    public CinemachineVirtualCamera vcam;
+    public CinemachineVirtualCamera[] vcams;
     [Range(0,1)]public float SlerpFactor = 0.5f; 
 
     bool movementEnabled = true;
@@ -34,13 +34,14 @@ public class PlayerMovement : MonoBehaviour
         if(gravity)
         transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.GetGravityAngle()),SlerpFactor);
         
-        // if(vcam)vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
+        foreach(CinemachineVirtualCamera vcam in vcams)
+            vcam.m_Lens.Dutch = transform.rotation.eulerAngles.z;
 
         if(movementEnabled)
         {
-            if(gravity?.GetGravityAngle() == 180)
-                controller.SetInput(new Vector2(-input.MovementAxis.x,input.MovementAxis.y),input.Jump,input.Crouch);
-            else
+            // if(gravity?.GetGravityAngle() == 180)
+                // controller.SetInput(new Vector2(-input.MovementAxis.x,input.MovementAxis.y),input.Jump,input.Crouch);
+            // else
                 controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
         }
         else

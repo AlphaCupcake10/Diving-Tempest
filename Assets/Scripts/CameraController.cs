@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
         {
             if(point == null)continue;
             if(point == Player)continue;
-            if(Vector3.Distance(transform.position,point.transform.position) > point.Range)continue;
+            if(Vector2.Distance(Player.transform.position,point.transform.position) > point.Range)continue;
             count += point.Priority;
             avg += point.transform.position * point.Priority;
         }

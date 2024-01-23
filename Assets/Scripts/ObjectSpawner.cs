@@ -7,19 +7,35 @@ public class ObjectSpawner : MonoBehaviour
     public Transform Target;
     public GameObject Prefab;
     public float RepeatRate = 3;
-    public int RepeatLimit = 0;
-    
-    int currentSpawned = 0;
+    public int TotalSpawns = 0;
+    public List<GameObject> spawns;
+    public float checkRadius = 5;
+    public SpriteRenderer spriteRenderer;
+
 
     void Start()
     {
+        spriteRenderer.enabled = false;
         InvokeRepeating("Spawn",0,RepeatRate);
     }
 
     void Spawn()
     {
-        if(RepeatLimit != 0)if(currentSpawned>=RepeatLimit)return;
-        currentSpawned++;
-        Instantiate(Prefab,transform.position,transform.rotation).GetComponent<NPC_AI>().target = Target;//TODO change to function
+        spawns.RemoveAll(spawn => spawn == null);
+        spawns.RemoveAll(spawn => Vector3.Distance(spawn.transform.position,transform.position) > checkRadius);
+        
+        if(spawns.Count >= TotalSpawns)return;
+
+
+        GameObject Spawned = Instantiate(Prefab,transform.position,transform.rotation,transform);
+        Spawned?.SetActive(true);
+        spawns.Add(Spawned);
+
+        Spawned?.GetComponent<NPC_AI>()?.SetTarget(Target);
+    }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, checkRadius);
     }
 }

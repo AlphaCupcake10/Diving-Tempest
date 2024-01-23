@@ -16,9 +16,11 @@ public class Telekinesis : MonoBehaviour
     public float weightLimit = 30;
     public float force = 10000;
     public float recoilMultiplier = 1.5f;
+    public float slowMotionDuration = 5f;
     public float grabBufferInput = 500;
     [Space]
     public Rigidbody2D grabbed;
+    public GameObject friendlyBullet;
     [Space]
     public UnityEvent OnGrab;
     public UnityEvent OnThrow;
@@ -36,6 +38,7 @@ public class Telekinesis : MonoBehaviour
         controller = GetComponent<CharacterController2D>();
         input = GetComponent<PlayerInput>();
         RB = GetComponent<Rigidbody2D>();
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     bool grabKeyPressed = false;
@@ -75,6 +78,7 @@ public class Telekinesis : MonoBehaviour
             }
             if(input.grabKey)
             {
+                GrabKeyBufferUpdate();
                 Throw(false);
             }
         }
@@ -143,10 +147,18 @@ public class Telekinesis : MonoBehaviour
         {
             OnThrow.Invoke();
             if(wasSlowMotion)RB.velocity = Vector2.zero;
-            if((parryAble.value & (1 << grabbed.gameObject.layer)) != 0)RB.AddForce(-throwDirection*force*recoilMultiplier / Time.timeScale);
+            if((parryAble.value & (1 << grabbed.gameObject.layer)) != 0 && !controller.GetIsGrounded())
+            {
+                RB.AddForce(-throwDirection*force*recoilMultiplier / Time.timeScale);
+            }
+            else if((parryAble.value & (1 << grabbed.gameObject.layer)) == 0)
+            {
+                RB.AddForce(-throwDirection*force / Time.timeScale);
+            }
             grabbed.AddForce(throwDirection*force / Time.timeScale);
         }
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
+        grabbed.GetComponent<Collider2D>().enabled = true;
         grabbed = null;
     }
     private void Grab(Rigidbody2D rigidbody)
@@ -155,6 +167,15 @@ public class Telekinesis : MonoBehaviour
         {
             SetSlowMotionState(true);
         }
+
+        if(rigidbody.GetComponent<Projectile>() != null)
+        {
+            GameObject newBullet = Instantiate(friendlyBullet,rigidbody.position,rigidbody.transform.rotation);
+            Destroy(rigidbody.gameObject);
+            rigidbody = newBullet.GetComponent<Rigidbody2D>();
+            rigidbody.GetComponent<Collider2D>().enabled = false;
+        }
+
         OnGrab.Invoke();
         grabbed = rigidbody;
         throwDirection = (grabbed.position - RB.position).normalized;
@@ -167,8 +188,8 @@ public class Telekinesis : MonoBehaviour
         if(isSlowMotion != val)
         {
             isSlowMotion = val;
-            if(val)TimeManager.Instance.SlowMotion(.05f);
-            else TimeManager.Instance.ResumeGame();
+            if(val)TimeManager.Instance.SlowMotion(.05f,slowMotionDuration);
+            else TimeManager.Instance.StopSlowMotion();
         }
     }
 }

@@ -88,4 +88,10 @@ public class NPC_AI : MonoBehaviour
         }
 
     }
+
+    public void SetTarget(Transform val)
+    {
+        target = val;
+    }
+
 }

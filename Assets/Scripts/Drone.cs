@@ -20,7 +20,8 @@ public class Drone : MonoBehaviour
     {
         public float Force = 1000f;
         public float LifeTime = 1;
-        public float FireDelay = .1f;
+        public float FireDelay = 1f;
+        public float ChargeDelay = 1f;
     }
 
     [Space]
@@ -28,6 +29,7 @@ public class Drone : MonoBehaviour
     public Transform ShootPoint;
     public GameObject Projectile;
     public GameObject Explosion;
+    public UnityEvent OnCharge;
     public UnityEvent OnShoot;
 
 
@@ -103,7 +105,8 @@ public class Drone : MonoBehaviour
         if(timer > config.FireDelay)
         {
             timer = 0;
-            Shoot();
+            OnCharge.Invoke();
+            Invoke("Shoot",config.ChargeDelay);
         }
     }
 

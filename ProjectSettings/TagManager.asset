@@ -14,7 +14,7 @@ TagManager:
   - Player
   - Trigger
   - PhysicsObjects
-  - Companion
+  - Friendly
   - Parry
   - 
   - 

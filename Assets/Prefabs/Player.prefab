@@ -20200,8 +20200,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Graphic: {fileID: 332977615443318539}
-  vcam: {fileID: 0}
-  SlerpFactor: 0.1
+  vcams:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SlerpFactor: 0.05
   animator: {fileID: 550019820619331131}
 --- !u!114 &4146380093382647652
 MonoBehaviour:
@@ -20236,18 +20239,20 @@ MonoBehaviour:
   Crosshair: {fileID: 8675594476141479899}
   physicsObjects:
     serializedVersion: 2
-    m_Bits: 1280
+    m_Bits: 1792
   parryAble:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1536
   range: 2
   autoAimRadius: 0.5
   minGrabDistance: 1
   weightLimit: 30
   force: 10000
   recoilMultiplier: 2
+  slowMotionDuration: 1
   grabBufferInput: 500
   grabbed: {fileID: 0}
+  friendlyBullet: {fileID: 5217527671294023484, guid: 1dca06812931aa044ac69a7b6bf828cb, type: 3}
   OnGrab:
     m_PersistentCalls:
       m_Calls:
