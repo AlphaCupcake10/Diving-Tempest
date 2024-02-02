@@ -204,7 +204,7 @@ public class CharacterController2D : MonoBehaviour
         // JUMPING LOGICS BELOW
         if(!isSpecialJumpReady && isGroundedCayote && !willBonk)
         {
-            if(isSliding && Mathf.Abs(velocity.x) <= config.MaxVelocity * config.SlideJumpStartThreshold)
+            if(isSliding)
             {
                 isSpecialJumpReady = true;
                 perfectTime = Time.time + config.PerfectDelayMS/1000;

@@ -167,7 +167,15 @@ public class Telekinesis : MonoBehaviour
         {
             SetSlowMotionState(true);
         }
+        rigidbody = ConvertProjectile(rigidbody);
+        OnGrab.Invoke();
+        grabbed = rigidbody;
+        throwDirection = (grabbed.position - RB.position).normalized;
+        rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
+    }
 
+    Rigidbody2D ConvertProjectile(Rigidbody2D rigidbody)
+    {
         if(rigidbody.GetComponent<Projectile>() != null)
         {
             GameObject newBullet = Instantiate(friendlyBullet,rigidbody.position,rigidbody.transform.rotation);
@@ -175,11 +183,7 @@ public class Telekinesis : MonoBehaviour
             rigidbody = newBullet.GetComponent<Rigidbody2D>();
             rigidbody.GetComponent<Collider2D>().enabled = false;
         }
-
-        OnGrab.Invoke();
-        grabbed = rigidbody;
-        throwDirection = (grabbed.position - RB.position).normalized;
-        rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
+        return rigidbody;
     }
 
     bool isSlowMotion = false;

@@ -21,7 +21,7 @@ MonoBehaviour:
   SlidingSmoothing: 1.0101
   SlideStartThreshold: 0.95
   SlideStopThreshold: 0.5
-  SlideJumpStartThreshold: 0.95
+  SlideJumpStartThreshold: 0.85
   SlideJumpSpeedRatio: 1.65
   SlideJumpHeightRatio: 1
   ChargedJumpHeightRatio: 1.7
@@ -30,8 +30,8 @@ MonoBehaviour:
   WallJumpSpeedRatio: 1
   WallJumpHeightRatio: 1
   PerfectDelayMS: 450
-  PerfectWindowMS: 60
+  PerfectWindowMS: 100
   ChargeJumpTimeMS: 500
   CayoteTimeMS: 100
-  JumpCooldownMS: 500
+  JumpCooldownMS: 250
   JumpBufferTimeMS: 50

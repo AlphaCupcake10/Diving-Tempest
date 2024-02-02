@@ -10,10 +10,19 @@ public class PlayerInput : MonoBehaviour
     public Vector2 MovementAxis;
     public bool grabKey = false;
     public bool throwKey = false;
+    public bool restartKey = false;
     public bool isInputBlocked = false;
+
+    public static PlayerInput Instance;
+
+    void Start()
+    {
+        Instance = this;
+    }
 
     void Update()
     {
+        restartKey = Input.GetKeyDown(KeyCode.R);
         if(isInputBlocked)
         {
             MovementAxis = Vector2.zero;

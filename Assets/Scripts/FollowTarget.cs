@@ -14,4 +14,9 @@ public class FollowTarget : MonoBehaviour
         if(!Target)return;
         transform.position += (Target.position - transform.position)/Damping;
     }
+
+    public void SetTarget(Transform target)
+    {
+        Target = target;
+    }
 }
