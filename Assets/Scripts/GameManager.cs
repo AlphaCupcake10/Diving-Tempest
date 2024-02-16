@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartScreen()
     {
+        Timer.Instance?.SaveTimer();
         TimeManager.Instance.PauseGame();
         DiedScreen.SetActive(true);
     }

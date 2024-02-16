@@ -26,7 +26,12 @@ public class CheckpointManager : MonoBehaviour
     
     public void SaveCheckPoint()
     {
+        Timer.Instance?.SaveTimer();
         PlayerPrefs.SetInt("CheckpointIndex",CheckpointIndex);
+        if(CheckpointIndex == 0)
+        {
+            Timer.Instance?.ResetTimer();
+        }
     }
     public void LoadPointFromPrefs()
     {
