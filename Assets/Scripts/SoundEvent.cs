@@ -14,7 +14,6 @@ public class SoundEvent : MonoBehaviour
     }
 
     public SoundGroup[] groups;
-
     public void PlaySoundGroup(int index)
     {
         PlaySound(groups[index].clips[Random.Range(0,groups[index].clips.Length-1)],groups[index].volume,groups[index].spatialBlend);
@@ -22,6 +21,7 @@ public class SoundEvent : MonoBehaviour
     public void PlaySound(AudioClip clip,float volume,float spatialBlend)
     {
         AudioSource source = gameObject.AddComponent<AudioSource>();
+        source.outputAudioMixerGroup = AudioManager.Instance.GetEffectsGroup();
         source.clip = clip;
         source.volume = volume;
         source.spatialBlend = spatialBlend;

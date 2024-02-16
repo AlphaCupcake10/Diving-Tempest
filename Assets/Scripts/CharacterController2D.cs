@@ -294,7 +294,7 @@ public class CharacterController2D : MonoBehaviour
             if(velocity.y <= 0)
             {
                 if(InputCrouch)
-                    velocity.y*=Mathf.Clamp01(config.WallSlideFactor*1.85f);
+                    velocity.y*=Mathf.Clamp01(config.WallSlideFactor*2.25f);
                 else
                     velocity.y*=config.WallSlideFactor;
             }
