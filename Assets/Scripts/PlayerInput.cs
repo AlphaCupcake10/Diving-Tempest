@@ -12,6 +12,7 @@ public class PlayerInput : MonoBehaviour
     public bool throwKey = false;
     public bool restartKey = false;
     public bool isInputBlocked = false;
+    public bool pauseKey = false;
 
     public static PlayerInput Instance;
 
@@ -36,6 +37,7 @@ public class PlayerInput : MonoBehaviour
         Crouch = Input.GetButton("Crouch");
         MovementAxis = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));
 
+        pauseKey = Input.GetKeyDown(KeyCode.Escape);
         grabKey = Input.GetKeyDown(KeyCode.Mouse1);
         throwKey = Input.GetKey(KeyCode.Mouse0);
     }

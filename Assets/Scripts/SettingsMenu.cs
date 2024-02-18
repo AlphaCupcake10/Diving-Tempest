@@ -25,7 +25,7 @@ public class SettingsMenu : MonoBehaviour
     }
     public void TriggerQuit () {
     #if UNITY_WEBGL == true && UNITY_EDITOR == false
-        GameOver ();
+        QuitGame ();
     #endif
     }
 }

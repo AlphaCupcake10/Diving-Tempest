@@ -5,7 +5,7 @@ public class Timer : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
     private float startTime;
-    private bool timerActive;
+    public bool timerActive = true;
 
     public static Timer Instance;
     void Awake()
@@ -15,21 +15,26 @@ public class Timer : MonoBehaviour
     void Start()
     {
         startTime = Time.time;
-        timerActive = true;
         LoadTimer();
+        UpdateTimer();
     }
 
     void Update()
     {
         if (timerActive)
         {
-            float t = Time.time - startTime;
-
-            string minutes = ((int)t / 60).ToString();
-            string seconds = (t % 60).ToString("f0");
-
-            timerText.text = minutes.PadLeft(2, '0') + ":" + seconds.PadLeft(2, '0');
+            UpdateTimer();
         }
+    }
+
+    void UpdateTimer()
+    {
+        float t = Time.time - startTime;
+
+        string minutes = ((int)t / 60).ToString();
+        string seconds = (t % 60).ToString("f0");
+
+        timerText.text = minutes.PadLeft(2, '0') + ":" + seconds.PadLeft(2, '0');
     }
 
     public void SaveTimer()
@@ -44,7 +49,11 @@ public class Timer : MonoBehaviour
 
     public void StopTimer()
     {
-        timerActive = false;
+        if(timerActive)
+        {
+            timerActive = false;
+            UpdateTimer();
+        }
     }
 
     public void ResumeTimer()

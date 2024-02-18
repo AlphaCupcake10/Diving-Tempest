@@ -14,7 +14,7 @@ public class CheckpointManager : MonoBehaviour
     }
     public void setCheckPoint(int index)
     {
-        if(index < CheckpointIndex)return;
+        if(index <= CheckpointIndex)return;
         CheckpointIndex = index;
         SaveCheckPoint();
     }
@@ -30,6 +30,7 @@ public class CheckpointManager : MonoBehaviour
         PlayerPrefs.SetInt("CheckpointIndex",CheckpointIndex);
         if(CheckpointIndex == 0)
         {
+            print("Checkpoint 0");
             Timer.Instance?.ResetTimer();
         }
     }
