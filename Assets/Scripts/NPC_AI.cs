@@ -26,7 +26,7 @@ public class NPC_AI : MonoBehaviour
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        InvokeRepeating("UpdatePath",0,.05f);
+        InvokeRepeating("UpdatePath",0,.2f);
     }
 
     public void StartFollowing()

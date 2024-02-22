@@ -54,7 +54,8 @@ public class TimeManager : MonoBehaviour
     LTDescr Tween;
     void StartTween(float slowFactor,float duration)
     {
-        Tween = LeanTween.value(gameObject, SetTimeScale, slowFactor, 1f, duration);
+        float accesibilityFactor = PlayerInput.Instance.inputType == PlayerInput.InputType.Touch ? 2f : 1f;
+        Tween = LeanTween.value(gameObject, SetTimeScale, slowFactor, 1f, duration * accesibilityFactor);
     }
     void CancelTween()
     {

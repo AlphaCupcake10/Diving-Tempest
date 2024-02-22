@@ -66,7 +66,7 @@ public class Telekinesis : MonoBehaviour
             GrabNearest();
             return;
         }
-        if(grabbed != null)
+        else if(grabbed != null)
         {
             if(!Crosshair.activeInHierarchy)
                 Crosshair.SetActive(true);

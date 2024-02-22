@@ -73,6 +73,10 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        if(Input.touchCount > 0)
+        {
+            inputType = InputType.Touch;
+        }
         if(p_inputType != inputType)
         {
             p_inputType = inputType;
@@ -81,6 +85,7 @@ public class PlayerInput : MonoBehaviour
         if (isInputBlocked)
         {
             MovementAxis = Vector2.zero;
+            AimAxis = Vector2.zero;
             Jump = false;
             Crouch = false;
             grabKey = false;
@@ -96,7 +101,7 @@ public class PlayerInput : MonoBehaviour
 
             pauseKey = Input.GetKeyDown(KeyCode.Escape);
             grabKey = Input.GetKeyDown(KeyCode.Mouse1);
-            throwKey = Input.GetKey(KeyCode.Mouse0);
+            throwKey = Input.GetKeyDown(KeyCode.Mouse0);
         }
         else if(inputType == InputType.Touch)
         {
@@ -142,21 +147,25 @@ public class PlayerInput : MonoBehaviour
     }
     public void RightStickDown()
     {
-        grabKey = true;
-        Invoke("ResetGrabKey", 0.05f);
-    }
-    public void ResetGrabKey()
-    {
-        grabKey = false;
+        StartCoroutine(GrabKeyNextFrame());
     }
     public void RightStickUp()
     {
-        throwKey = true;
-        Invoke("ResetThrowKey", 0.05f);
+        StartCoroutine(ThrowKeyNextFrame());
     }
-    public void ResetThrowKey()
+    IEnumerator ThrowKeyNextFrame()
     {
+        yield return new WaitForEndOfFrame();
+        throwKey = true;
+        yield return new WaitForEndOfFrame();
         throwKey = false;
+    }
+    IEnumerator GrabKeyNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        grabKey = true;
+        yield return new WaitForEndOfFrame();
+        grabKey = false;
     }
 
     private void OnDestroy()
