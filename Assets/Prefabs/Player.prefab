@@ -19887,7 +19887,6 @@ GameObject:
   - component: {fileID: 7095000620125196156}
   - component: {fileID: 3389915827363631343}
   - component: {fileID: 595541043231200245}
-  - component: {fileID: 4146380093382647652}
   - component: {fileID: 5604121761307042481}
   - component: {fileID: 127804114599786880}
   - component: {fileID: 5137093402305325446}
@@ -20206,24 +20205,6 @@ MonoBehaviour:
   - {fileID: 0}
   SlerpFactor: 0.05
   animator: {fileID: 550019820619331131}
---- !u!114 &4146380093382647652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7063334821944476967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb93afd2ceb61243b6397d9741dac1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Jump: 0
-  Crouch: 0
-  MovementAxis: {x: 0, y: 0}
-  grabKey: 0
-  throwKey: 0
-  isInputBlocked: 0
 --- !u!114 &5604121761307042481
 MonoBehaviour:
   m_ObjectHideFlags: 0

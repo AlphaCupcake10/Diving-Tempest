@@ -23,6 +23,21 @@ public class SettingsMenu : MonoBehaviour
     {
         AudioManager.Instance?.SetEffectsVolume(volume);
     }
+    public void SetInputType(int type)
+    {
+        if(type == 0)
+        {
+            PlayerInput.Instance.inputType = PlayerInput.InputType.Keyboard;
+        }
+        else if(type == 1)
+        {
+            PlayerInput.Instance.inputType = PlayerInput.InputType.Touch;
+        }
+        else if(type == 2)
+        {
+            PlayerInput.Instance.inputType = PlayerInput.InputType.Controller;
+        }
+    }
     public void TriggerQuit () {
     #if UNITY_WEBGL == true && UNITY_EDITOR == false
         QuitGame ();

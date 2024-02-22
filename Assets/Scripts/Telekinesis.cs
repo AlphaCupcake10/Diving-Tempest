@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(PlayerInput))]
 public class Telekinesis : MonoBehaviour
 {
     public GameObject Crosshair;
@@ -36,7 +35,7 @@ public class Telekinesis : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController2D>();
-        input = GetComponent<PlayerInput>();
+        input = PlayerInput.Instance;
         RB = GetComponent<Rigidbody2D>();
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -96,7 +95,15 @@ public class Telekinesis : MonoBehaviour
 
         grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
 
-        throwDirection += (AutoAim(GetWorldPositionOnPlane(Input.mousePosition,0))-RB.position)/10;
+        if(input.inputType == PlayerInput.InputType.Touch || input.inputType == PlayerInput.InputType.Controller)
+        {
+            throwDirection += input.AimAxis/5;
+        }
+        else
+        {
+            throwDirection += ((Vector2)GetWorldPositionOnPlane(Input.mousePosition,0)-RB.position)/10;
+        }
+        
         throwDirection.Normalize();
         Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(throwDirection.y,throwDirection.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
 
@@ -111,19 +118,6 @@ public class Telekinesis : MonoBehaviour
         xy.Raycast(ray, out distance);
         Vector3 MousePoint = ray.GetPoint(distance);
         return MousePoint;
-    }
-    public Vector2 AutoAim(Vector2 MousePoint)
-    {
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(MousePoint,autoAimRadius,Vector2.zero,autoAimRadius,physicsObjects);
-        if(hits.Length == 0)return MousePoint;
-        RaycastHit2D closest = hits[0];
-        foreach(RaycastHit2D hit in hits)
-        {
-            if(hit.rigidbody == grabbed)continue;
-            if(closest.distance > hit.distance)closest = hit;
-        }
-        if(closest.rigidbody == grabbed)return MousePoint;
-        return closest.collider.transform.position;
     }
     private void GrabNearest()
     {
@@ -141,6 +135,7 @@ public class Telekinesis : MonoBehaviour
     }
     private void Throw(bool addForce)
     {
+        if(grabbed == null)return;
         bool wasSlowMotion = isSlowMotion;
         SetSlowMotionState(false);
         if(addForce)

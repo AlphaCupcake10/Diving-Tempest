@@ -7,6 +7,12 @@ public class PauseMenu : MonoBehaviour
 {
     public CanvasGroup Fader;
     public float transitionDuration = .5f;
+    public static PauseMenu Instance;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {

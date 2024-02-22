@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Animations;
 using Cinemachine;
 
-[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(CharacterController2D))]
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,12 +24,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        input = GetComponent<PlayerInput>();
+        input = PlayerInput.Instance;
         controller = GetComponent<CharacterController2D>();
         gravity = GetComponent<Gravity>();
     }
     void Update()
     {
+        if(!input)return;
         if(gravity)
         transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.GetGravityAngle()),SlerpFactor);
         

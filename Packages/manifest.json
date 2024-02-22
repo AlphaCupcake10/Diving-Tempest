@@ -46,10 +46,10 @@
   },
   "scopedRegistries": [
     {
-      "name": "spoiledcat",
-      "url": "https://registry.spoiledcat.com",
+      "name": "NPM",
+      "url": "https://registry.npmjs.org",
       "scopes": [
-        "com.spoiledcat"
+        "io.realm.unity"
       ]
     }
   ]
