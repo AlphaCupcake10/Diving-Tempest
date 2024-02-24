@@ -18,6 +18,7 @@ public class SceneLoader : MonoBehaviour
     void Start()
     {
         Fader.gameObject.SetActive(true);
+        LeanTween.alpha(Fader.rectTransform,1,.001f);    
         LeanTween.alpha(Fader.rectTransform,0,transitionDuration);    
     }
     void LoadSceneUsingManager()

@@ -38,6 +38,17 @@ public class SettingsMenu : MonoBehaviour
             PlayerInput.Instance.inputType = PlayerInput.InputType.Controller;
         }
     }
+    public void SetTouchScheme(int type)
+    {
+        if (type == 0)
+        {
+            PlayerInput.Instance.touchScheme = PlayerInput.TouchScheme.Buttons;
+        }
+        else if (type == 1)
+        {
+            PlayerInput.Instance.touchScheme = PlayerInput.TouchScheme.JoysticksOnly;
+        }
+    }
     public void TriggerQuit () {
     #if UNITY_WEBGL == true && UNITY_EDITOR == false
         QuitGame ();

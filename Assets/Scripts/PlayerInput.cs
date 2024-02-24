@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Animations;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -25,12 +26,23 @@ public class PlayerInput : MonoBehaviour
         Controller
     }
 
+    public enum TouchScheme
+    {
+        Buttons,
+        JoysticksOnly
+    }
+
     InputType p_inputType;
     public InputType inputType;
+    public TouchScheme touchScheme;
+    
+
 
     public GameObject touchControls;
     public FloatingJoystick joystickLeft;
     public FloatingJoystick joystickRight;
+    public TouchButton jumpButton;
+    public TouchButton crouchButton;
 
     public static PlayerInput Instance
     {
@@ -70,15 +82,41 @@ public class PlayerInput : MonoBehaviour
             joystickRight.OnJoystickUp += RightStickUp;
         }
     }
+    private void OnDestroy()
+    {
+        // Make sure to unsubscribe from the event when the script is destroyed to avoid memory leaks.
+        if (joystickRight != null)
+        {
+            joystickRight.OnJoystickDown -= RightStickDown;
+            joystickRight.OnJoystickUp -= RightStickUp;
+        }
+    }
 
     private void Update()
     {
+        restartKey = Input.GetKeyDown(KeyCode.R);
         if(Input.touchCount > 0)
         {
             inputType = InputType.Touch;
         }
         if(p_inputType != inputType)
         {
+            if(inputType == InputType.Touch)
+            {
+                ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
+                foreach(ShadowCaster2D shadow in shadows)
+                {
+                    shadow.enabled = false;
+                }
+            }
+            if(inputType == InputType.Keyboard)
+            {
+                ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
+                foreach(ShadowCaster2D shadow in shadows)
+                {
+                    shadow.enabled = true;
+                }
+            }
             p_inputType = inputType;
         }
         touchControls.SetActive(inputType == InputType.Touch && SceneManager.GetActiveScene().buildIndex != 0);
@@ -94,7 +132,6 @@ public class PlayerInput : MonoBehaviour
         }
         if (inputType == InputType.Keyboard)
         {
-            restartKey = Input.GetKeyDown(KeyCode.R);
             Jump = Input.GetButtonDown("Jump");
             Crouch = Input.GetButton("Crouch");
             MovementAxis = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -117,13 +154,42 @@ public class PlayerInput : MonoBehaviour
             {
                 MovementAxis = new Vector2(0, 0);
             }
-            Jump = joystickLeft.Vertical > 0.5f;
             
-            if(joystickLeft.Vertical < -0.5f)
+            if(touchScheme == TouchScheme.Buttons)
             {
-                Crouch = true;
-                CancelInvoke("ResetCrouch");
-                Invoke("ResetCrouch", 0.1f);
+                if(!jumpButton.gameObject.activeSelf)
+                {
+                    jumpButton.gameObject.SetActive(true);
+                }
+                if(!crouchButton.gameObject.activeSelf)
+                {
+                    crouchButton.gameObject.SetActive(true);
+                }
+                Jump = jumpButton.isTouching;
+                if(crouchButton.isTouching)
+                {
+                    Crouch = true;
+                    CancelInvoke("ResetCrouch");
+                    Invoke("ResetCrouch", 0.1f);
+                }
+            }
+            else if(touchScheme == TouchScheme.JoysticksOnly)
+            {
+                if(jumpButton.gameObject.activeSelf)
+                {
+                    jumpButton.gameObject.SetActive(false);
+                }
+                if(crouchButton.gameObject.activeSelf)
+                {
+                    crouchButton.gameObject.SetActive(false);
+                }
+                Jump = joystickLeft.Vertical > 0.5f;
+                if(joystickLeft.Vertical < -0.5f)
+                {
+                    Crouch = true;
+                    CancelInvoke("ResetCrouch");
+                    Invoke("ResetCrouch", 0.1f);
+                }
             }
 
             if(joystickRight.Direction.magnitude > 0.1f)
@@ -145,6 +211,11 @@ public class PlayerInput : MonoBehaviour
     {
         Crouch = false;
     }
+    public void JumpButtonDown()
+    {
+        Jump = true;
+    }
+    
     public void RightStickDown()
     {
         StartCoroutine(GrabKeyNextFrame());
@@ -166,16 +237,6 @@ public class PlayerInput : MonoBehaviour
         grabKey = true;
         yield return new WaitForEndOfFrame();
         grabKey = false;
-    }
-
-    private void OnDestroy()
-    {
-        // Make sure to unsubscribe from the event when the script is destroyed to avoid memory leaks.
-        if (joystickRight != null)
-        {
-            joystickRight.OnJoystickDown -= RightStickDown;
-            joystickRight.OnJoystickUp -= RightStickUp;
-        }
     }
 
     public void SetBlockedState(bool val)

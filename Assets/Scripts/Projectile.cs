@@ -9,7 +9,10 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(PlayerInput.Instance.inputType == PlayerInput.InputType.Touch)
+        {
+            GetComponent<Rigidbody2D>().mass *= 1.5f;
+        }
     }
 
     // Update is called once per frame

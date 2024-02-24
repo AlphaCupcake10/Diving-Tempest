@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    void Start()
+    {
+        PlayerInput.Instance.SetBlockedState(false);
+    }
     public void Die()
     {
         GameManager.Instance.RestartScreen();
-        GetComponent<PlayerInput>()?.SetBlockedState(true);
+        PlayerInput.Instance.SetBlockedState(true);
     }
 }
