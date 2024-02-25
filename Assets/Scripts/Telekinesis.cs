@@ -10,13 +10,12 @@ public class Telekinesis : MonoBehaviour
     public LayerMask physicsObjects;
     public LayerMask parryAble;
     public float range = 1;
-    public float autoAimRadius = 1;
     public float minGrabDistance = 1.5f;
     public float weightLimit = 30;
     public float force = 10000;
     public float recoilMultiplier = 1.5f;
     public float slowMotionDuration = 5f;
-    public float grabBufferInput = 500;
+    public float coolDownTime = .1f;
     [Space]
     public Rigidbody2D grabbed;
     public GameObject friendlyBullet;
@@ -40,29 +39,29 @@ public class Telekinesis : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
     }
 
-    bool grabKeyPressed = false;
-    void GrabKeyBufferUpdate()
+    bool tryingToGrab = false;
+    bool p_grabKey = false;
+    bool isOnCooldown = false;
+
+    void ClearCooldown()
     {
-        grabKeyPressed = false;
+        isOnCooldown = false;
     }
     void Update()
     {
-        if(input.isInputBlocked)return;
-
         if(controller.GetIsGrounded())
         {
             SetSlowMotionState(false);
         }
 
-        if(input.grabKey)
+        if(p_grabKey != input.grabKey)
         {
-            CancelInvoke("GrabKeyBufferUpdate");
-            grabKeyPressed = true;
-            Invoke("GrabKeyBufferUpdate",grabBufferInput);
+            p_grabKey = input.grabKey;
+            tryingToGrab = input.grabKey;
         }
-        if(grabKeyPressed && grabbed == null)
+
+        if(tryingToGrab && grabbed == null && !isOnCooldown)
         {
-            GrabKeyBufferUpdate();
             GrabNearest();
             return;
         }
@@ -75,9 +74,9 @@ public class Telekinesis : MonoBehaviour
             {
                 Throw(true);
             }
-            if(input.grabKey)
+            if(tryingToGrab)
             {
-                GrabKeyBufferUpdate();
+                tryingToGrab = false;
                 Throw(false);
             }
         }
@@ -155,6 +154,10 @@ public class Telekinesis : MonoBehaviour
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed.GetComponent<Collider2D>().enabled = true;
         grabbed = null;
+
+        isOnCooldown = true;
+        CancelInvoke("ClearCooldown");
+        Invoke("ClearCooldown",coolDownTime);
     }
     private void Grab(Rigidbody2D rigidbody)
     {
@@ -167,6 +170,7 @@ public class Telekinesis : MonoBehaviour
         grabbed = rigidbody;
         throwDirection = (grabbed.position - RB.position).normalized;
         rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
+        tryingToGrab = false;
     }
 
     Rigidbody2D ConvertProjectile(Rigidbody2D rigidbody)

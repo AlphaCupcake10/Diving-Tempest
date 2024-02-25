@@ -20225,13 +20225,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1536
   range: 2
-  autoAimRadius: 0.5
   minGrabDistance: 1
   weightLimit: 30
   force: 10000
   recoilMultiplier: 2
   slowMotionDuration: 1
-  grabBufferInput: 500
+  coolDownTime: 0.5
   grabbed: {fileID: 0}
   friendlyBullet: {fileID: 5217527671294023484, guid: 1dca06812931aa044ac69a7b6bf828cb, type: 3}
   OnGrab:

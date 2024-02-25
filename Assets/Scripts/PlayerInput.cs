@@ -117,7 +117,7 @@ public class PlayerInput : MonoBehaviour
             MovementAxis = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
             pauseKey = Input.GetKeyDown(KeyCode.Escape);
-            grabKey = Input.GetKeyDown(KeyCode.Mouse1);
+            grabKey = Input.GetKey(KeyCode.Mouse1);
             throwKey = Input.GetKeyDown(KeyCode.Mouse0);
         }
         else if(inputType == InputType.Touch)
@@ -198,10 +198,11 @@ public class PlayerInput : MonoBehaviour
     
     public void RightStickDown()
     {
-        StartCoroutine(GrabKeyNextFrame());
+        grabKey = true;
     }
     public void RightStickUp()
     {
+        grabKey = false;
         StartCoroutine(ThrowKeyNextFrame());
     }
     IEnumerator ThrowKeyNextFrame()
@@ -210,13 +211,6 @@ public class PlayerInput : MonoBehaviour
         throwKey = true;
         yield return new WaitForEndOfFrame();
         throwKey = false;
-    }
-    IEnumerator GrabKeyNextFrame()
-    {
-        yield return new WaitForEndOfFrame();
-        grabKey = true;
-        yield return new WaitForEndOfFrame();
-        grabKey = false;
     }
 
     public void SetBlockedState(bool val)
