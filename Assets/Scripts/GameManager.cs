@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,11 +14,28 @@ public class GameManager : MonoBehaviour
     {
         player = FindObjectOfType<Player>();
         Instance = this;
-        
     }
 
     void Start()
     {
+
+        if(PlayerInput.Instance.inputType == PlayerInput.InputType.Touch)
+        {
+            ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
+            foreach(ShadowCaster2D shadow in shadows)
+            {
+                shadow.enabled = false;
+            }
+        }
+        if(PlayerInput.Instance.inputType == PlayerInput.InputType.Keyboard)
+        {
+            ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
+            foreach(ShadowCaster2D shadow in shadows)
+            {
+                shadow.enabled = true;
+            }
+        }
+        
         CheckpointManager.Instance.LoadPointFromPrefs();
         player.transform.position = CheckpointManager.Instance.getCheckPointPosition();
         CameraController.Instance.transform.position = player.transform.position;

@@ -99,26 +99,6 @@ public class PlayerInput : MonoBehaviour
         {
             inputType = InputType.Touch;
         }
-        if(p_inputType != inputType)
-        {
-            if(inputType == InputType.Touch)
-            {
-                ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
-                foreach(ShadowCaster2D shadow in shadows)
-                {
-                    shadow.enabled = false;
-                }
-            }
-            if(inputType == InputType.Keyboard)
-            {
-                ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
-                foreach(ShadowCaster2D shadow in shadows)
-                {
-                    shadow.enabled = true;
-                }
-            }
-            p_inputType = inputType;
-        }
         touchControls.SetActive(inputType == InputType.Touch && SceneManager.GetActiveScene().buildIndex != 0);
         if (isInputBlocked)
         {
