@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class GameEvent:MonoBehaviour
 {
+    public string m_string;
     public Object m_object;
     public float m_float;
     public Vector3 m_vector3;
@@ -38,5 +39,9 @@ public class GameEvent:MonoBehaviour
     public void DeltaHealth(EntityHealth health)
     {
         health?.DeltaHealth(m_float);
+    }
+    public void SetSubtitle()
+    {
+        SubtitleManager.Instance?.DisplaySubtitle(m_string);
     }
 }

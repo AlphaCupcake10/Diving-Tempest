@@ -17,6 +17,8 @@ public class PlayerInput : MonoBehaviour
     public bool isInputBlocked = false;
     public bool pauseKey = false;
 
+    public bool interactKey = false;
+
     private static PlayerInput _instance;
 
     public enum InputType
@@ -94,6 +96,7 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        interactKey = Input.GetKeyDown(KeyCode.E);
         restartKey = Input.GetKeyDown(KeyCode.R);
         if(Input.touchCount > 0)
         {

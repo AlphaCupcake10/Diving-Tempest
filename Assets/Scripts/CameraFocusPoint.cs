@@ -6,17 +6,20 @@ public class CameraFocusPoint : MonoBehaviour
 {
     public int Priority = 10;
     public float Range = 10;
+    void OnEnable()
+    {
+        CameraController.Instance?.AddPoint(this);
+    }
     void Start()
     {
         CameraController.Instance?.AddPoint(this);
     }
-    void onDisable()
+    void OnDisable()
     {
         CameraController.Instance?.RemovePoint(this);
     }
     void OnTransformParentChanged()
     {
-        Debug.Log("CALLED");
         CameraController.Instance?.RemovePoint(this);
     }
     void OnDrawGizmosSelected()

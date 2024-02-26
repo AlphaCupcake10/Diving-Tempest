@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 
 public class Telekinesis : MonoBehaviour
 {
     public GameObject Crosshair;
     public LayerMask physicsObjects;
     public LayerMask parryAble;
+    public LayerMask grabbedLayer;
+    int oldLayerMask;
     public float range = 1;
     public float minGrabDistance = 1.5f;
     public float weightLimit = 30;
@@ -36,7 +39,6 @@ public class Telekinesis : MonoBehaviour
         controller = GetComponent<CharacterController2D>();
         input = PlayerInput.Instance;
         RB = GetComponent<Rigidbody2D>();
-        Cursor.lockState = CursorLockMode.Confined;
     }
 
     bool tryingToGrab = false;
@@ -87,12 +89,16 @@ public class Telekinesis : MonoBehaviour
                 Crosshair.SetActive(false);
         }
     }
-
+    Vector2 TargetPosition;
+    float boundRadius;
     private void UpdateGrabbed()
     {
         grabbed.velocity = Vector2.zero;
 
-        grabDistance = minGrabDistance + grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
+        boundRadius = grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
+
+        grabDistance = minGrabDistance + boundRadius;
+
 
         if(input.inputType == PlayerInput.InputType.Touch || input.inputType == PlayerInput.InputType.Controller)
         {
@@ -104,10 +110,12 @@ public class Telekinesis : MonoBehaviour
         }
         
         throwDirection.Normalize();
-        Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(throwDirection.y,throwDirection.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
+        
+        TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
-        Vector2 TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
-        grabbed.position = (TargetPosition);
+        grabbed.velocity += (TargetPosition - (Vector2)grabbed.position) * 20;
+        Vector3 temp = (Vector2)grabbed.position - RB.position;
+        Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(temp.y,temp.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
     }
     public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z)
     {
@@ -120,7 +128,7 @@ public class Telekinesis : MonoBehaviour
     }
     private void GrabNearest()
     {
-        RaycastHit2D[]hits = Physics2D.CircleCastAll(transform.position+(GetWorldPositionOnPlane(Input.mousePosition,0)-transform.position).normalized/2,range,transform.forward,range,physicsObjects);
+        RaycastHit2D[]hits = Physics2D.CircleCastAll(transform.position,range,transform.forward,range,physicsObjects);
         if(hits.Length == 0)return;
         RaycastHit2D closest = hits[0];
         foreach(RaycastHit2D hit in hits)
@@ -151,6 +159,16 @@ public class Telekinesis : MonoBehaviour
             }
             grabbed.AddForce(throwDirection*force / Time.timeScale);
         }
+        else
+        {
+            grabbed.velocity += RB.velocity;
+        }
+
+        if((parryAble.value & (1 << grabbed.gameObject.layer)) == 0)//not parryable
+        {
+            grabbed.gameObject.layer = oldLayerMask;
+        }
+
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed.GetComponent<Collider2D>().enabled = true;
         grabbed = null;
@@ -165,6 +183,13 @@ public class Telekinesis : MonoBehaviour
         {
             SetSlowMotionState(true);
         }
+
+        if((parryAble.value & (1 << rigidbody.gameObject.layer)) == 0)//not parryable
+        {
+            oldLayerMask = rigidbody.gameObject.layer;
+            rigidbody.gameObject.layer = 9;
+        }
+
         rigidbody = ConvertProjectile(rigidbody);
         OnGrab.Invoke();
         grabbed = rigidbody;
@@ -194,5 +219,10 @@ public class Telekinesis : MonoBehaviour
             if(val)TimeManager.Instance.SlowMotion(.05f,slowMotionDuration);
             else TimeManager.Instance.StopSlowMotion();
         }
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(TargetPosition,boundRadius);
     }
 }

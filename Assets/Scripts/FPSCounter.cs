@@ -24,7 +24,7 @@ public class FPSCounter : MonoBehaviour
             frames = 0;
             lastInterval = timeNow;
             if(fpsCounter)
-                fpsCounter.text = fps.ToString("000");
+                fpsCounter.text = fps.ToString("00");
         }
     }
 }
