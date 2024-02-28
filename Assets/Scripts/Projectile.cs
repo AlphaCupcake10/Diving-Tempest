@@ -14,12 +14,6 @@ public class Projectile : MonoBehaviour
             GetComponent<Rigidbody2D>().mass *= 1.5f;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     void OnCollisionEnter2D(Collision2D col)
     {
         Destroy(Trail,1);

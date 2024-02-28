@@ -4,45 +4,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(NPC_AI))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(ShootController))]
+[RequireComponent(typeof(Pathfinder_AI))]
 public class Drone : MonoBehaviour
 {
-    public LayerMask PassThrough;
     public SpriteRenderer spriteRenderer;
     public Sprite[] sprites;
     public float turnRange = 1;
+    public float MovementForce = 20f;
 
     [Space]
 
-    public GunConfig config = new GunConfig();
-    [System.Serializable]
-    public class GunConfig
-    {
-        public float Force = 1000f;
-        public float LifeTime = 1;
-        public float FireDelay = 1f;
-        public float ChargeDelay = 1f;
-    }
+    public bool isDetected = false;
+    public float DetectionCheckDelay = 1;
+    public float DetectionRange = 10;
+    public float ShootRange = 8;
+
+    public float MinRange = 2;
+    public float MaxRange = 5;
+
+    public LayerMask RaycastLayer;
+    public LayerMask PlayerLayer;
 
     [Space]
 
     public Transform ShootPoint;
-    public GameObject Projectile;
     public GameObject Explosion;
-    public UnityEvent OnCharge;
-    public UnityEvent OnShoot;
-
-
-    NPC_AI AI;
+    Pathfinder_AI AI;
     int spriteIndex = 0;
-    Vector2 dir;
+    Vector2 dir = Vector3.one;
+    bool p_isGrabbed = false;
     bool isGrabbed = false;
-    public bool isDetected = false;
-    public float DetectionRange = 10;
-    public float ShootRange = 8;
-    public float FallBackRange = 4;
-
-
+    Rigidbody2D rb;
+    ShootController SC;
     public void SetGrabbedState(bool val)
     {
         isGrabbed = val;
@@ -50,10 +45,37 @@ public class Drone : MonoBehaviour
 
     void Start()
     {
-        AI = GetComponent<NPC_AI>();
-        AI.StopFollowing();
+        SC = GetComponent<ShootController>();
+        rb = GetComponent<Rigidbody2D>();
+        AI = GetComponent<Pathfinder_AI>();
+        InvokeRepeating("GetTarget",0,DetectionCheckDelay);
     }
 
+    void GetTarget()
+    {
+        if(AI.target)return;
+        Collider2D player = Physics2D.OverlapCircle(transform.position,DetectionRange,PlayerLayer);
+        if(player?.GetComponent<EntityHealth>())
+        {
+            AI.target = player.transform;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if(AI.target == null)return;
+        if(isDetected)
+        {
+            if(((Vector2)AI.target.position - rb.position).sqrMagnitude < MinRange*MinRange)
+            {
+                rb.AddForce(-AI.GetDirection()*MovementForce);
+            }
+            else if(((Vector2)AI.target.position - rb.position).sqrMagnitude > MaxRange*MaxRange)
+            {
+                rb.AddForce(AI.GetDirection()*MovementForce);
+            }
+        }
+    }
 
     void Update()
     {
@@ -63,28 +85,23 @@ public class Drone : MonoBehaviour
         
         if(Distance < DetectionRange && !isDetected)
         {
-            RaycastHit2D hit = Physics2D.Raycast(ShootPoint.position,AI.target.position-transform.position,DetectionRange,PassThrough);
+            RaycastHit2D hit = Physics2D.Raycast(ShootPoint.position,AI.target.position-transform.position,DetectionRange,RaycastLayer);
             if(hit && hit.collider)
             if(hit.collider.transform == AI.target)
                 isDetected = true;
-                
         }
 
         if(isDetected)
         {
             RotateGraphic();
             if(Distance < ShootRange)CallShoot();
-            SetFollowingState(Distance > FallBackRange);
         }
-    }
 
-    bool isFollowing = false;
-    public void SetFollowingState(bool val)
-    {
-        if(isFollowing == val)return;
-        isFollowing = val;
-        if(isFollowing)AI.StartFollowing();
-        if(!isFollowing)AI.StopFollowing();
+        if(p_isGrabbed != isGrabbed)
+        {
+            p_isGrabbed = isGrabbed;
+            SC.rateModifier = (isGrabbed)?4f:1f;
+        }
     }
 
     private void RotateGraphic()
@@ -95,33 +112,30 @@ public class Drone : MonoBehaviour
 
         dir = AI.target.position-transform.position;
         transform.localScale = new Vector3(Mathf.Sign(dir.x)*((isGrabbed)?-1:1),1,1);
-        AI?.rb?.MoveRotation(Mathf.Atan2(dir.y*Mathf.Sign(dir.x),Mathf.Abs(dir.x))*Mathf.Rad2Deg);
+        rb?.MoveRotation(Mathf.Atan2(dir.y*Mathf.Sign(dir.x),Mathf.Abs(dir.x))*Mathf.Rad2Deg);
     }
 
-    float timer = 0;
     private void CallShoot()
     {
-        timer+=Time.deltaTime;
-        if(timer > config.FireDelay)
-        {
-            timer = 0;
-            OnCharge.Invoke();
-            Invoke("Shoot",config.ChargeDelay);
-        }
-    }
+        // SC.flipped = ((isGrabbed)?1:-1);
 
-    private void Shoot()
-    {
-        GameObject projectile = Instantiate(Projectile,ShootPoint.position,ShootPoint.rotation);
-        Rigidbody2D RB = projectile.GetComponent<Rigidbody2D>();
-        RB.AddForce(ShootPoint.right*Mathf.Sign(dir.x)*config.Force / Time.timeScale *((isGrabbed)?-1:1));
-        // Destroy(projectile,config.LifeTime); TODO CHANGE
-        OnShoot.Invoke();
+        SC.CallShoot();
     }
 
     public void Explode()
     {
         Destroy(Instantiate(Explosion,transform.position,transform.rotation),1);
         Destroy(gameObject);
+    }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, DetectionRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, ShootRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, MinRange);
+        Gizmos.DrawWireSphere(transform.position, MaxRange);
     }
 }

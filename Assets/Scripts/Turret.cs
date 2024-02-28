@@ -3,65 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(ShootController))]
 public class Turret : MonoBehaviour
 {
     public bool canAim = false;
     public Transform TurretHead;
-    public Transform TurretBarrel;
-
-    public GameObject Projectile;
-    public GameObject Explosion;
-    public UnityEvent OnShoot;
-    public UnityEvent OnCharge;
     public float ShootRange = 8;
     public Transform Target;
-
-
-    public GunConfig config = new GunConfig();
-    [System.Serializable]
-    public class GunConfig
-    {
-        public float Force = 6000f;
-        public float LifeTime = 1;
-        public float FireDelay = 2f;
-        public float ChargeDelay = 1f;
-    }
-
     Vector3 Direction;
+
+    ShootController SC;
+
+    private void Start()
+    {
+        SC = GetComponent<ShootController>();
+    }
 
     void Update()
     {
         if(Target == null)return;
         float Distance = Vector3.Distance(Target.position,transform.position);
         if(canAim)RotateBarrel();
-        if(Distance < ShootRange) CallShoot();
+        if(Distance < ShootRange) SC?.CallShoot();
     }
 
     void RotateBarrel()
     {
         Direction = Target.position-transform.position;
         TurretHead.rotation = Quaternion.AngleAxis((Mathf.Atan2(Direction.y,Direction.x)*Mathf.Rad2Deg),transform.forward);
-    }
-
-    float timer = 0;
-    private void CallShoot()
-    {
-        timer+=Time.deltaTime;
-        if(timer > config.FireDelay)
-        {
-            timer = 0;
-            OnCharge.Invoke();
-            Invoke("Shoot",config.ChargeDelay);
-        }
-    }
-
-    private void Shoot()
-    {
-        GameObject projectile = Instantiate(Projectile,TurretBarrel.position,TurretBarrel.rotation);
-        Rigidbody2D RB = projectile.GetComponent<Rigidbody2D>();
-        RB.AddForce(TurretBarrel.right*config.Force / Time.timeScale);
-        // Destroy(projectile,config.LifeTime); TODO CHANGE
-        OnShoot.Invoke();
     }
 
     void OnDrawGizmosSelected()

@@ -5158,7 +5158,7 @@ GameObject:
   - component: {fileID: 5953502721972086923}
   - component: {fileID: 6391505720762504810}
   - component: {fileID: 4278454194566924951}
-  - component: {fileID: 7636684355333882773}
+  - component: {fileID: 6694881346839166416}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -5197,46 +5197,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canAim: 0
   TurretHead: {fileID: 7496380180289938349}
-  TurretBarrel: {fileID: 9017168242608434852}
-  Projectile: {fileID: 5217527671294023484, guid: 7513fb5d3f79f3441b56fde650a363aa, type: 3}
-  Explosion: {fileID: 4143358597286329440, guid: f12c248f6117888448917616555b2af8, type: 3}
-  OnShoot:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4278454194566924951}
-        m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
-        m_MethodName: PlaySoundGroup
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnCharge:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7645313783332805379}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
   ShootRange: 12
   Target: {fileID: 0}
-  config:
-    Force: 6000
-    LifeTime: 1
-    FireDelay: 1.5
-    ChargeDelay: 1
 --- !u!114 &4278454194566924951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5257,7 +5219,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 0fd9fef3c0c4e9c4f92bd3e523157664, type: 3}
     volume: 1
     spatialBlend: 0.8
---- !u!114 &7636684355333882773
+--- !u!114 &6694881346839166416
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5266,47 +5228,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 3904586115767579067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Script: {fileID: 11500000, guid: a752176db99e81e4583cb2ad49827bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ComponentVersion: 1
-  m_LightType: 3
-  m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
-  m_Color: {r: 0.4764151, g: 0.89870876, b: 1, a: 1}
-  m_Intensity: 1
-  m_LightVolumeIntensity: 1
-  m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
-  m_LightCookieSprite: {fileID: 0}
-  m_DeprecatedPointLightCookieSprite: {fileID: 0}
-  m_LightOrder: 0
-  m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 0
-  m_NormalMapDistance: 3
-  m_NormalMapQuality: 2
-  m_UseNormalMap: 0
-  m_ShadowIntensityEnabled: 0
-  m_ShadowIntensity: 0.75
-  m_ShadowVolumeIntensityEnabled: 0
-  m_ShadowVolumeIntensity: 0.75
-  m_LocalBounds:
-    m_Center: {x: 0, y: -0.00000011920929, z: 0}
-    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0.3014776
-  m_PointLightOuterRadius: 3.14
-  m_ShapeLightParametricSides: 5
-  m_ShapeLightParametricAngleOffset: 0
-  m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
-  m_ShapeLightFalloffOffset: {x: 0, y: 0}
-  m_ShapePath:
-  - {x: -0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: 0.5, z: 0}
-  - {x: -0.5, y: 0.5, z: 0}
+  ShootPoint: {fileID: 9017168242608434852}
+  config: {fileID: 11400000, guid: 477463dc8388aa541b2b6be3ec0004ab, type: 2}
+  ChargeDelay: 1
+  ShootEvents:
+    OnCharge:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7645313783332805379}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+    OnShoot:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4278454194566924951}
+          m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
+          m_MethodName: PlaySoundGroup
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &7151631194915061311
 GameObject:
   m_ObjectHideFlags: 0

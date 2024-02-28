@@ -362,7 +362,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.24407203, b: 0, a: 0.08627451}
+      maxColor: {r: 1, g: 0.24407203, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5122,6 +5122,7 @@ GameObject:
   - component: {fileID: 8886089527684084526}
   - component: {fileID: 3344475967836159025}
   - component: {fileID: 8852141693084635582}
+  - component: {fileID: 4546383191031653407}
   m_Layer: 10
   m_Name: Drone
   m_TagString: Untagged
@@ -5158,7 +5159,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 30
-  m_LinearDrag: 1
+  m_LinearDrag: 1.5
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -5248,9 +5249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 50
   nextWaypointDistance: 3
-  rb: {fileID: 0}
 --- !u!114 &3344475967836159025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5263,9 +5262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d96c1aac43a73449b9b226ba33b623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PassThrough:
-    serializedVersion: 2
-    m_Bits: 65
   spriteRenderer: {fileID: 6805512830155300148}
   sprites:
   - {fileID: 462149967, guid: b19d3e0f5d9504b478a065aae93979d1, type: 3}
@@ -5276,48 +5272,21 @@ MonoBehaviour:
   - {fileID: 2137489851, guid: b19d3e0f5d9504b478a065aae93979d1, type: 3}
   - {fileID: 462149967, guid: b19d3e0f5d9504b478a065aae93979d1, type: 3}
   turnRange: 0.5
-  config:
-    Force: 6000
-    LifeTime: 1
-    FireDelay: 1.5
-    ChargeDelay: 1
+  MovementForce: 400
+  isDetected: 1
+  DetectionCheckDelay: 1
+  DetectionRange: 7
+  ShootRange: 5.22
+  MinRange: 2.7
+  MaxRange: 5.23
+  RaycastLayer:
+    serializedVersion: 2
+    m_Bits: 65
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 64
   ShootPoint: {fileID: 9099694401901612}
-  Projectile: {fileID: 5217527671294023484, guid: 7513fb5d3f79f3441b56fde650a363aa, type: 3}
   Explosion: {fileID: 4143358597286329440, guid: f12c248f6117888448917616555b2af8, type: 3}
-  OnCharge:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8925647857454377920}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  OnShoot:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3011235315230751545}
-        m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
-        m_MethodName: PlaySoundGroup
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  isDetected: 0
-  DetectionRange: 20
-  ShootRange: 10
-  FallBackRange: 4
 --- !u!114 &8852141693084635582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5355,6 +5324,64 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onMaxHealth:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4546383191031653407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451852516141138899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a752176db99e81e4583cb2ad49827bc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShootPoint: {fileID: 9099694401901612}
+  config: {fileID: 11400000, guid: 477463dc8388aa541b2b6be3ec0004ab, type: 2}
+  ChargeDelay: 1
+  ShootEvents:
+    OnCharge:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8925647857454377920}
+          m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+          m_MethodName: Play
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+    OnShoot:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3011235315230751545}
+          m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
+          m_MethodName: PlaySoundGroup
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2

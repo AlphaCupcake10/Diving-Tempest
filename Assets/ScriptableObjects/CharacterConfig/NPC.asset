@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5fb1790d008b8448fac5cb76f8d159, type: 3}
   m_Name: NPC
   m_EditorClassIdentifier: 
-  MaxVelocity: 4.5
+  MaxVelocity: 2
   JumpHeight: 1.6
   Smoothing: 4
   AirControlCoef: 0.11

@@ -14,6 +14,7 @@ public class Dialogue {
 public class InteractableNPC : MonoBehaviour
 {
     public Dialogue[] dialogues;
+    public UnityEvent DialogueEndEvent;
     private int dialogueIndex = 0;
     public bool isSpeaking = false;
 
@@ -28,6 +29,13 @@ public class InteractableNPC : MonoBehaviour
     void Start()
     {
         player = Player.Instance?.transform;
+    }
+    void onEnable()
+    {
+        if(GetComponents<InteractableNPC>().Length > 1)
+        {
+            this.enabled = false;
+        }
     }
 
     void Update()
@@ -50,7 +58,7 @@ public class InteractableNPC : MonoBehaviour
         }
         p_isInRange = isInRange;
 
-        if (isInRange && PlayerInput.Instance.interactKey)
+        if (isInRange && PlayerInput.Instance.interactKey && !PlayerInput.Instance.isInputBlocked)
             StartDialogue();
     }
 
@@ -84,6 +92,7 @@ public class InteractableNPC : MonoBehaviour
     private void EndDialogue() {
         Debug.Log("End of dialogue");
         SubtitleManager.Instance?.ClearSubtitle();
+        DialogueEndEvent?.Invoke();
         dialogueIndex = 0;
         CancelInvoke("ResetSpeaking");
         Invoke("ResetSpeaking", 0.2f);

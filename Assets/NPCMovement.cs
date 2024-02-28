@@ -7,51 +7,40 @@ public class NPCMovement : MonoBehaviour
 {
     //References
     CharacterController2D controller;    
-    PlayerInput input;
     Gravity gravity;
 
     public Transform Graphic;
+    
 
     [Header("Camera")]
     [Range(0,1)]public float SlerpFactor = 0.5f; 
 
-    bool movementEnabled = true;
     bool facingRight = true;
+    bool isShooting = false;
+    bool isDead = false;
     public Animator animator;
 
     void Start()
     {
-        input = PlayerInput.Instance;
         controller = GetComponent<CharacterController2D>();
         gravity = GetComponent<Gravity>();
     }
     void Update()
     {
-        if(!input)return;
+        if(isDead)Destroy(this);
         if(gravity)
         transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(0,0,gravity.GetGravityAngle()),SlerpFactor);
 
-        if(movementEnabled)
-        {
-            controller.SetInput(input.MovementAxis,input.Jump,input.Crouch);
-        }
-        else
-        {
-            controller.SetInput(Vector2.zero,false,false);
-        }
+        controller.SetInput(Vector2.zero,false,false);
         UpdateFlip();
         UpdateAnimations();
     }
 
     void UpdateAnimations()
     {
-        // Debug.Log("help");
         animator.SetFloat("XSpeed",Mathf.Abs(controller.GetXSpeed()));
-        animator.SetFloat("YSpeed",controller.GetYSpeed());
-        animator.SetBool("isCrouching",controller.GetIsCrouching());
-        animator.SetBool("isSliding",controller.GetIsSliding());
-        animator.SetBool("isGrounded",controller.GetIsGrounded());
-        animator.SetBool("isWalled",controller.GetIsWalled());
+        animator.SetBool("isShooting",isShooting);
+        animator.SetBool("isDead",isDead);
     }
 
     void UpdateFlip()
@@ -77,20 +66,5 @@ public class NPCMovement : MonoBehaviour
             facingRight = false;
             Graphic.localScale = new Vector3(-1,1,1);
         }
-    }
-    
-    public void DisableMovement()
-    {
-        CancelInvoke("EnableMovement");
-        movementEnabled = false;
-    }
-    public void EnableMovement()
-    {
-        movementEnabled = true;
-    }
-    public void DisableMovement(float For)
-    {
-        movementEnabled = false;
-        Invoke("EnableMovement",For);
     }
 }

@@ -31,7 +31,7 @@ public class ObjectSpawner : MonoBehaviour
         Spawned?.SetActive(true);
         spawns.Add(Spawned);
 
-        Spawned?.GetComponent<NPC_AI>()?.SetTarget(Target);
+        Spawned?.GetComponent<Pathfinder_AI>()?.SetTarget(Target);
     }
     void OnDrawGizmosSelected()
     {

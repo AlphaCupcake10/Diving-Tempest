@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
             {
                 shadow.enabled = false;
             }
+            Debug.Log("Touch");
         }
         if(PlayerInput.Instance.inputType == PlayerInput.InputType.Keyboard)
         {
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
             {
                 shadow.enabled = true;
             }
+            Debug.Log("Keyboard");
         }
         
         CheckpointManager.Instance.LoadPointFromPrefs();

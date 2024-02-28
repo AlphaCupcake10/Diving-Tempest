@@ -8,6 +8,7 @@ using UnityEngine.Rendering.Universal;
 public class Telekinesis : MonoBehaviour
 {
     public GameObject Crosshair;
+    public GameObject SpriteMask;
     public LayerMask physicsObjects;
     public LayerMask parryAble;
     public LayerMask grabbedLayer;
@@ -44,6 +45,9 @@ public class Telekinesis : MonoBehaviour
     bool tryingToGrab = false;
     bool p_grabKey = false;
     bool isOnCooldown = false;
+    bool grabbedParryable = false;
+    bool p_crosshairOpened = true;
+    bool crosshairOpened = false;
 
     void ClearCooldown()
     {
@@ -51,6 +55,19 @@ public class Telekinesis : MonoBehaviour
     }
     void Update()
     {
+        if(crosshairOpened != p_crosshairOpened)
+        {
+            p_crosshairOpened = crosshairOpened;
+            if(crosshairOpened)
+            {
+                LeanTween.scaleY(SpriteMask,5,.4f).setEaseOutCubic().setIgnoreTimeScale(true);
+            }
+            else
+            {
+                LeanTween.scaleY(SpriteMask,0,.4f).setEaseOutCubic().setIgnoreTimeScale(true);
+            }
+        }
+
         if(controller.GetIsGrounded())
         {
             SetSlowMotionState(false);
@@ -69,8 +86,7 @@ public class Telekinesis : MonoBehaviour
         }
         else if(grabbed != null)
         {
-            if(!Crosshair.activeInHierarchy)
-                Crosshair.SetActive(true);
+            crosshairOpened = true;
             UpdateGrabbed();
             if(input.throwKey)
             {
@@ -84,17 +100,14 @@ public class Telekinesis : MonoBehaviour
         }
         else
         {
+            crosshairOpened = false;
             SetSlowMotionState(false);
-            if(Crosshair.activeInHierarchy)
-                Crosshair.SetActive(false);
         }
     }
     Vector2 TargetPosition;
     float boundRadius;
     private void UpdateGrabbed()
     {
-        grabbed.velocity = Vector2.zero;
-
         boundRadius = grabbed.GetComponent<Collider2D>().bounds.extents.magnitude;
 
         grabDistance = minGrabDistance + boundRadius;
@@ -113,7 +126,7 @@ public class Telekinesis : MonoBehaviour
         
         TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
-        grabbed.velocity += (TargetPosition - (Vector2)grabbed.position) * 20;
+        grabbed.velocity = (TargetPosition - (Vector2)grabbed.position) * 20;
         Vector3 temp = (Vector2)grabbed.position - RB.position;
         Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(temp.y,temp.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
     }
@@ -148,26 +161,20 @@ public class Telekinesis : MonoBehaviour
         if(addForce)
         {
             OnThrow.Invoke();
-            if(wasSlowMotion)RB.velocity = Vector2.zero;
-            if((parryAble.value & (1 << grabbed.gameObject.layer)) != 0 && !controller.GetIsGrounded())
+            if(grabbedParryable && !controller.GetIsGrounded())
             {
+                RB.velocity = Vector2.zero;
                 RB.AddForce(-throwDirection*force*recoilMultiplier / Time.timeScale);
             }
-            else if((parryAble.value & (1 << grabbed.gameObject.layer)) == 0)
+            else
             {
                 RB.AddForce(-throwDirection*force / Time.timeScale);
             }
             grabbed.AddForce(throwDirection*force / Time.timeScale);
         }
-        else
-        {
-            grabbed.velocity += RB.velocity;
-        }
 
-        if((parryAble.value & (1 << grabbed.gameObject.layer)) == 0)//not parryable
-        {
-            grabbed.gameObject.layer = oldLayerMask;
-        }
+        if(grabbedParryable)grabbed.velocity = RB.velocity;
+        grabbed.gameObject.layer = oldLayerMask;
 
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed.GetComponent<Collider2D>().enabled = true;
@@ -179,18 +186,23 @@ public class Telekinesis : MonoBehaviour
     }
     private void Grab(Rigidbody2D rigidbody)
     {
-        if(!controller.GetIsGrounded() && (parryAble.value & (1 << rigidbody.gameObject.layer)) != 0)
+        if((parryAble.value & (1 << rigidbody.gameObject.layer)) != 0)
         {
-            SetSlowMotionState(true);
+            grabbedParryable = true;
+            if(!controller.GetIsGrounded())
+            {
+                SetSlowMotionState(true);
+            }
+        }
+        else
+        {
+            grabbedParryable = false;
         }
 
-        if((parryAble.value & (1 << rigidbody.gameObject.layer)) == 0)//not parryable
-        {
-            oldLayerMask = rigidbody.gameObject.layer;
-            rigidbody.gameObject.layer = 9;
-        }
 
         rigidbody = ConvertProjectile(rigidbody);
+        oldLayerMask = rigidbody.gameObject.layer;
+        rigidbody.gameObject.layer = 9;
         OnGrab.Invoke();
         grabbed = rigidbody;
         throwDirection = (grabbed.position - RB.position).normalized;
