@@ -167,10 +167,10 @@ RectTransform:
   - {fileID: 1842823340879961939}
   m_Father: {fileID: 7417901531116552786}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -479.5, y: 144.163}
-  m_SizeDelta: {x: 959, y: 791.673}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 480.5, y: 120.9875}
+  m_SizeDelta: {x: -961, y: -241.975}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8954276956197691260
 CanvasRenderer:
@@ -366,10 +366,10 @@ RectTransform:
   - {fileID: 5945941385841581774}
   m_Father: {fileID: 7417901531116552786}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 887.63, y: -395.83997}
-  m_SizeDelta: {x: -1775.3, y: -791.67}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -250, y: 144.16501}
+  m_SizeDelta: {x: 500, y: 288.33002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7169070940395527496
 MonoBehaviour:
@@ -451,8 +451,9 @@ MonoBehaviour:
   restartKey: 0
   isInputBlocked: 0
   pauseKey: 0
+  interactKey: 0
   inputType: 1
-  touchScheme: 0
+  touchScheme: 1
   touchControls: {fileID: 8703221003739297544}
   joystickLeft: {fileID: 524751631846590936}
   joystickRight: {fileID: 3488984581027558107}

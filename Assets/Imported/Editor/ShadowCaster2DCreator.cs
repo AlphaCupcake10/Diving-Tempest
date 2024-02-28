@@ -24,7 +24,7 @@ public class ShadowCaster2DCreator : MonoBehaviour
 									.GetType("UnityEngine.Rendering.Universal.ShadowUtility")
 									.GetMethod("GenerateShadowMesh", BindingFlags.Public | BindingFlags.Static);
 
-	void Start()
+	void Awake()
 	{
 		Create();
 	}

@@ -18,24 +18,19 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
-        if(PlayerInput.Instance.inputType == PlayerInput.InputType.Touch)
+        ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
+        foreach(ShadowCaster2D shadow in shadows)
         {
-            ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
-            foreach(ShadowCaster2D shadow in shadows)
-            {
-                shadow.enabled = false;
-            }
-            Debug.Log("Touch");
-        }
-        if(PlayerInput.Instance.inputType == PlayerInput.InputType.Keyboard)
-        {
-            ShadowCaster2D[] shadows = FindObjectsOfType<ShadowCaster2D>();
-            foreach(ShadowCaster2D shadow in shadows)
+            if(SettingsManager.Instance.ShadowsEnabled)
             {
                 shadow.enabled = true;
             }
-            Debug.Log("Keyboard");
+            else
+            {
+                shadow.enabled = false;
+                Debug.Log(SettingsManager.Instance.ShadowsEnabled);
+                Debug.Log(shadow.enabled);
+            }
         }
         
         CheckpointManager.Instance.LoadPointFromPrefs();
