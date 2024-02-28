@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7211707623388805956}
   - component: {fileID: 7135398344820033}
   - component: {fileID: 5290369949586583499}
+  - component: {fileID: 3826337491876308706}
+  - component: {fileID: 3157927183243660494}
   m_Layer: 0
   m_Name: Boom
   m_TagString: Untagged
@@ -106,3 +108,58 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3826337491876308706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4143358597286329440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b30cc2a9b94119949a33c1d2bd3bc56b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groups:
+  - clips:
+    - {fileID: 8300000, guid: b105ba7c3292a6445ba4cbee9ca1cd2b, type: 3}
+    - {fileID: 8300000, guid: c1759005f216f894d89afe94c7c3ee61, type: 3}
+    volume: 0.636
+    spatialBlend: 0.45
+--- !u!114 &3157927183243660494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4143358597286329440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3eb4e68e06f674086ea02fb0e2e6a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3826337491876308706}
+        m_TargetAssemblyTypeName: SoundEvent, Assembly-CSharp
+        m_MethodName: PlaySoundGroup
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTriggerEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onTriggerExit:
+    m_PersistentCalls:
+      m_Calls: []
+  DisableRenderer: 0
+  Mask:
+    serializedVersion: 2
+    m_Bits: 0
