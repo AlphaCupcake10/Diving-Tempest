@@ -10,6 +10,7 @@ public class HttpService : MonoBehaviour
     private static HttpService instance;
     private HttpClient httpClient;
     public string baseUrl = "https://jsonplaceholder.typicode.com";
+    public string token = "CARLOS";
 
     private void Awake()
     {
@@ -95,5 +96,10 @@ public class HttpService : MonoBehaviour
 
         HttpResponseMessage response = await httpClient.SendAsync(request);
         return await response.Content.ReadAsStringAsync();
+    }
+
+    public void SetToken(string token)
+    {
+        this.token = token;
     }
 }

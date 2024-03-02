@@ -1,5 +1,5 @@
 mergeInto(LibraryManager.library, {
-  QuitGame: function (userName, score) {
+  QuitGame: function () {
     window.dispatchReactUnityEvent("QuitGame");
   },
 });

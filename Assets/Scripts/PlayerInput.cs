@@ -48,6 +48,8 @@ public class PlayerInput : MonoBehaviour
     public TouchButton jumpButton;
     public TouchButton crouchButton;
 
+    public TouchButton interactButton;
+
     public static PlayerInput Instance
     {
         get
@@ -85,7 +87,13 @@ public class PlayerInput : MonoBehaviour
             joystickRight.OnJoystickDown += RightStickDown;
             joystickRight.OnJoystickUp += RightStickUp;
         }
+        if(interactButton != null)
+        {
+            interactButton.OnJoystickDown += InteractKeyDown;
+        }
+        interactButton.gameObject.SetActive(false);
     }
+
     private void OnDestroy()
     {
         // Make sure to unsubscribe from the event when the script is destroyed to avoid memory leaks.
@@ -94,6 +102,19 @@ public class PlayerInput : MonoBehaviour
             joystickRight.OnJoystickDown -= RightStickDown;
             joystickRight.OnJoystickUp -= RightStickUp;
         }
+        if(interactButton != null)
+        {
+            interactButton.OnJoystickDown -= InteractKeyDown;
+        }
+    }
+
+    public void ShowInteractButton()
+    {
+        interactButton.gameObject.SetActive(true);
+    }
+    public void HideInteractButton()
+    {
+        interactButton.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -109,11 +130,15 @@ public class PlayerInput : MonoBehaviour
         debugKeys[8] = Input.GetKeyDown(KeyCode.F9);
         debugKeys[9] = Input.GetKeyDown(KeyCode.F10);
 
-        interactKey = Input.GetKeyDown(KeyCode.E);
-        restartKey = Input.GetKeyDown(KeyCode.R);
         if(Input.touchCount > 0)
         {
             inputType = InputType.Touch;
+        }
+
+        if (inputType == InputType.Keyboard)
+        {
+            interactKey = Input.GetKeyDown(KeyCode.E);
+            restartKey = Input.GetKeyDown(KeyCode.R);
         }
         touchControls.SetActive(inputType == InputType.Touch && SceneManager.GetActiveScene().buildIndex != 0);
         if (isInputBlocked)
@@ -202,15 +227,6 @@ public class PlayerInput : MonoBehaviour
     {
         PauseMenu.Instance?.TogglePauseMenu();
     }
-
-    void ResetCrouch()
-    {
-        Crouch = false;
-    }
-    public void JumpButtonDown()
-    {
-        Jump = true;
-    }
     
     public void RightStickDown()
     {
@@ -221,6 +237,17 @@ public class PlayerInput : MonoBehaviour
         grabKey = false;
         StartCoroutine(ThrowKeyNextFrame());
     }
+
+    public void ResetCrouch()
+    {
+        Crouch = false;
+    }
+
+    void InteractKeyDown()
+    {
+        StartCoroutine(ResetInteractKey());
+    }
+
     IEnumerator ThrowKeyNextFrame()
     {
         yield return new WaitForEndOfFrame();
@@ -229,6 +256,13 @@ public class PlayerInput : MonoBehaviour
         throwKey = false;
     }
 
+    IEnumerator ResetInteractKey()
+    {
+        yield return new WaitForEndOfFrame();
+        interactKey = true;
+        yield return new WaitForEndOfFrame();
+        interactKey = false;
+    }
     public void SetBlockedState(bool val)
     {
         isInputBlocked = val;

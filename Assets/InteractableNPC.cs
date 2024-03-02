@@ -52,9 +52,12 @@ public class InteractableNPC : MonoBehaviour
         isInRange = (player.position-transform.position).sqrMagnitude < distance * distance;
 
         if (isInRange && !p_isInRange) {
-            SubtitleManager.Instance?.DisplaySubtitle("Press E to talk");
+            if(PlayerInput.Instance.inputType == PlayerInput.InputType.Keyboard)
+                SubtitleManager.Instance?.DisplaySubtitle("Press E to interact");
+            PlayerInput.Instance?.ShowInteractButton();
         } else if (!isInRange && p_isInRange) {
             SubtitleManager.Instance?.ClearSubtitle();
+            PlayerInput.Instance?.HideInteractButton();
         }
         p_isInRange = isInRange;
 
@@ -67,6 +70,7 @@ public class InteractableNPC : MonoBehaviour
             // Display the first dialogue
             isSpeaking = true;
             PlayerInput.Instance.SetBlockedState(true);
+            PlayerInput.Instance?.ShowInteractButton();
             DisplayDialogue(dialogues[dialogueIndex]);
         }
     }

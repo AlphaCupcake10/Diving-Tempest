@@ -27,12 +27,14 @@ public class Timer : MonoBehaviour
         }
     }
 
+    float actualTime;
+
     void UpdateTimer()
     {
-        float t = Time.time - startTime;
+        actualTime = Time.time - startTime;
 
-        string minutes = ((int)t / 60).ToString();
-        string seconds = (t % 60).ToString("f0");
+        string minutes = ((int)actualTime / 60).ToString();
+        string seconds = (actualTime % 60).ToString("f0");
 
         timerText.text = minutes.PadLeft(2, '0') + ":" + seconds.PadLeft(2, '0');
     }
@@ -66,5 +68,10 @@ public class Timer : MonoBehaviour
     {
         startTime = Time.time;
         PlayerPrefs.SetFloat("Timer", 0);
+    }
+
+    public float GetTime()
+    {
+        return actualTime;
     }
 }

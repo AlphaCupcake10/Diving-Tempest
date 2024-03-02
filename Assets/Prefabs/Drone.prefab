@@ -5273,7 +5273,7 @@ MonoBehaviour:
   - {fileID: 462149967, guid: b19d3e0f5d9504b478a065aae93979d1, type: 3}
   turnRange: 0.5
   MovementForce: 400
-  isDetected: 1
+  isDetected: 0
   DetectionCheckDelay: 1
   DetectionRange: 7
   ShootRange: 5.22

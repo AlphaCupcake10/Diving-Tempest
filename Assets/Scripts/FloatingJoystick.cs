@@ -20,6 +20,7 @@ public class FloatingJoystick : MonoBehaviour
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
+        StickRect.gameObject.SetActive(false);
     }
 
     bool p_isTouching = false;
@@ -28,6 +29,7 @@ public class FloatingJoystick : MonoBehaviour
     public int touches = 0;
 
     public List<Touch> touchesInRect;
+
     void Update()
     {
         touchesInRect = new List<Touch>();

@@ -5232,7 +5232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShootPoint: {fileID: 9017168242608434852}
-  config: {fileID: 11400000, guid: 477463dc8388aa541b2b6be3ec0004ab, type: 2}
+  config: {fileID: 11400000, guid: 29ee4fd4b3fc14d4e86bc16f4f1ae53c, type: 2}
   ChargeDelay: 1
   ShootEvents:
     OnCharge:
@@ -5265,6 +5265,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  rateModifier: 1
 --- !u!1 &7151631194915061311
 GameObject:
   m_ObjectHideFlags: 0

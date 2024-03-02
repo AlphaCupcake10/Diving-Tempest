@@ -178,7 +178,7 @@ public class Telekinesis : MonoBehaviour
             grabbed.AddForce(throwDirection*force / Time.timeScale);
         }
 
-        if(grabbedParryable)grabbed.velocity = RB.velocity;
+        grabbed.velocity = Vector2.zero;
         grabbed.gameObject.layer = oldLayerMask;
 
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
