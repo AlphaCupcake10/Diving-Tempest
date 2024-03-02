@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -12,6 +13,9 @@ public class GameManager : MonoBehaviour
 
     public Light2D GlobalLight;
     public float OriginalLightIntensity;
+    
+    [DllImport("__Internal")]
+    private static extern void SetTime (float recordTime);
 
     void Awake()
     {
@@ -80,6 +84,13 @@ public class GameManager : MonoBehaviour
         Timer.Instance?.SaveTimer();
         TimeManager.Instance.PauseGame();
         DiedScreen.SetActive(true);
+    }
+
+    public void SetTimer()
+    {
+        #if UNITY_WEBGL == true && UNITY_EDITOR == false
+            SetTime(Timer.Instance.GetTime());
+        #endif
     }
 
 }

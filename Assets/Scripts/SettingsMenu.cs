@@ -12,10 +12,10 @@ public class SettingsMenu : MonoBehaviour
 
     public TMP_Dropdown InputTypeDropdown;
 
-    public Toggle ShadowsToggle;
-
     [DllImport("__Internal")]
-    private static extern void QuitGame();
+    private static extern void QuitGame ();
+
+    public Toggle ShadowsToggle;
 
     void Start()
     {
@@ -26,6 +26,8 @@ public class SettingsMenu : MonoBehaviour
         InputTypeDropdown.value = SettingsManager.Instance.TouchScheme;
 
         ShadowsToggle.isOn = SettingsManager.Instance.ShadowsEnabled;
+
+        
     }
 
     public void SetMasterVolume(float volume)
@@ -49,8 +51,8 @@ public class SettingsMenu : MonoBehaviour
         SettingsManager.Instance.ShadowsEnabled = value;
     }
     public void TriggerQuit () {
-    #if UNITY_WEBGL == true && UNITY_EDITOR == false
-        QuitGame ();
-    #endif
+        #if UNITY_WEBGL == true && UNITY_EDITOR == false
+            QuitGame();
+        #endif
     }
 }
