@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class ShootController : MonoBehaviour
 {
+    bool autoFire = false;
     public Transform ShootPoint;
     public GunConfig config;
     public float ChargeDelay = .2f;
@@ -36,6 +37,14 @@ public class ShootController : MonoBehaviour
         {
             lastFireTime = Time.time;
             Fire();
+        }
+    }
+
+    void Update()
+    {
+        if (autoFire)
+        {
+            CallShoot();
         }
     }
 
@@ -83,5 +92,10 @@ public class ShootController : MonoBehaviour
         Rigidbody2D RB = projectile.GetComponent<Rigidbody2D>();
         RB.AddForce(direction * config.Force * Mathf.Sign(transform.localScale.x)/Time.timeScale);
         ShootEvents.OnShoot.Invoke();
+    }
+
+    public void SetAutoFire(bool value)
+    {
+        autoFire = value;
     }
 }

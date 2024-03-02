@@ -119,7 +119,7 @@ public class Telekinesis : MonoBehaviour
         }
         else
         {
-            throwDirection += ((Vector2)GetWorldPositionOnPlane(Input.mousePosition,0)-RB.position)/10;
+            throwDirection += ((Vector2)GetWorldPositionOnPlane(Input.mousePosition,0)-RB.position)/3;
         }
         
         throwDirection.Normalize();
@@ -128,6 +128,11 @@ public class Telekinesis : MonoBehaviour
 
         grabbed.velocity = (TargetPosition - (Vector2)grabbed.position) * 20;
         Vector3 temp = (Vector2)grabbed.position - RB.position;
+        Grabbable grabbable = grabbed.GetComponent<Grabbable>();
+        if(grabbable != null && grabbable.autoAlign)
+        {
+            grabbable.transform.rotation = Quaternion.Euler(0,0,Mathf.Atan2(temp.y,temp.x)*Mathf.Rad2Deg + grabbable.offsetAngle);
+        }
         Crosshair.transform.rotation = Quaternion.AngleAxis(Mathf.Atan2(temp.y,temp.x)*Mathf.Rad2Deg,Crosshair.transform.forward);
     }
     public Vector3 GetWorldPositionOnPlane(Vector3 screenPosition, float z)
@@ -178,6 +183,9 @@ public class Telekinesis : MonoBehaviour
 
         grabbed?.GetComponent<Drone>()?.SetGrabbedState(false);
         grabbed.GetComponent<Collider2D>().enabled = true;
+
+        grabbed?.GetComponent<Grabbable>()?.OnThrow();
+
         grabbed = null;
 
         isOnCooldown = true;
@@ -207,6 +215,7 @@ public class Telekinesis : MonoBehaviour
         grabbed = rigidbody;
         throwDirection = (grabbed.position - RB.position).normalized;
         rigidbody?.GetComponent<Drone>()?.SetGrabbedState(true);
+        grabbed?.GetComponent<Grabbable>()?.OnGrab();
         tryingToGrab = false;
     }
 

@@ -15,7 +15,7 @@ MonoBehaviour:
   burst:
     Count: 1
     Delay: 0
-  Force: 6000
+  Force: 4500
   FireRate: 0.5
   Accuracy: 0.96
   Projectile: {fileID: 5217527671294023484, guid: 7513fb5d3f79f3441b56fde650a363aa, type: 3}

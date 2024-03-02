@@ -19,6 +19,8 @@ public class PlayerInput : MonoBehaviour
 
     public bool interactKey = false;
 
+    public bool[] debugKeys = new bool[10];
+
     private static PlayerInput _instance;
 
     public enum InputType
@@ -96,6 +98,17 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        debugKeys[0] = Input.GetKeyDown(KeyCode.F1);
+        debugKeys[1] = Input.GetKeyDown(KeyCode.F2);
+        debugKeys[2] = Input.GetKeyDown(KeyCode.F3);
+        debugKeys[3] = Input.GetKeyDown(KeyCode.F4);
+        debugKeys[4] = Input.GetKeyDown(KeyCode.F5);
+        debugKeys[5] = Input.GetKeyDown(KeyCode.F6);
+        debugKeys[6] = Input.GetKeyDown(KeyCode.F7);
+        debugKeys[7] = Input.GetKeyDown(KeyCode.F8);
+        debugKeys[8] = Input.GetKeyDown(KeyCode.F9);
+        debugKeys[9] = Input.GetKeyDown(KeyCode.F10);
+
         interactKey = Input.GetKeyDown(KeyCode.E);
         restartKey = Input.GetKeyDown(KeyCode.R);
         if(Input.touchCount > 0)
