@@ -38,9 +38,9 @@ public class NPCMovement : MonoBehaviour
 
     void UpdateAnimations()
     {
-        animator.SetFloat("XSpeed",Mathf.Abs(controller.GetXSpeed()));
-        animator.SetBool("isShooting",isShooting);
-        animator.SetBool("isDead",isDead);
+        animator?.SetFloat("XSpeed",Mathf.Abs(controller.GetXSpeed()));
+        animator?.SetBool("isShooting",isShooting);
+        animator?.SetBool("isDead",isDead);
     }
 
     void UpdateFlip()

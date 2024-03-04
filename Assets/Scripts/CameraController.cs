@@ -15,10 +15,12 @@ public class CameraController : MonoBehaviour
 
     public void AddPoint(CameraFocusPoint gravity)
     {
+        if(Points.Contains(gravity))return;
         Points.Add(gravity);
     }
     public void RemovePoint(CameraFocusPoint gravity)
     {
+        if(!Points.Contains(gravity))return;
         Points.Remove(gravity);
     }
     

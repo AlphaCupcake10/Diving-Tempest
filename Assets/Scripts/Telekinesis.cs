@@ -13,6 +13,7 @@ public class Telekinesis : MonoBehaviour
     public LayerMask parryAble;
     public LayerMask grabbedLayer;
     int oldLayerMask;
+    public float grabResponse = 20;
     public float range = 1;
     public float minGrabDistance = 1.5f;
     public float weightLimit = 30;
@@ -87,7 +88,6 @@ public class Telekinesis : MonoBehaviour
         else if(grabbed != null)
         {
             crosshairOpened = true;
-            UpdateGrabbed();
             if(input.throwKey)
             {
                 Throw(true);
@@ -104,6 +104,13 @@ public class Telekinesis : MonoBehaviour
             SetSlowMotionState(false);
         }
     }
+    void FixedUpdate()
+    {
+        if(grabbed != null)
+        {
+            UpdateGrabbed();
+        }
+    }
     Vector2 TargetPosition;
     float boundRadius;
     private void UpdateGrabbed()
@@ -115,20 +122,20 @@ public class Telekinesis : MonoBehaviour
 
         if(input.inputType == PlayerInput.InputType.Touch || input.inputType == PlayerInput.InputType.Controller)
         {
-            throwDirection += input.AimAxis/5;
+            throwDirection = input.AimAxis;
         }
         else
         {
-            throwDirection += ((Vector2)GetWorldPositionOnPlane(Input.mousePosition,0)-RB.position)/3;
+            throwDirection = ((Vector2)GetWorldPositionOnPlane(Input.mousePosition,0)-RB.position);
         }
         
         throwDirection.Normalize();
         
         TargetPosition = (Vector2)transform.position + throwDirection  * grabDistance;
 
-        grabbed.velocity = (TargetPosition - (Vector2)grabbed.position) * 20;
-        Vector3 temp = (Vector2)grabbed.position - RB.position;
+        grabbed.velocity = (TargetPosition - (Vector2)grabbed.position) * grabResponse / Time.timeScale; 
         Grabbable grabbable = grabbed.GetComponent<Grabbable>();
+        Vector3 temp = (Vector2)grabbed.position - RB.position;
         if(grabbable != null && grabbable.autoAlign)
         {
             grabbable.transform.rotation = Quaternion.Euler(0,0,Mathf.Atan2(temp.y,temp.x)*Mathf.Rad2Deg + grabbable.offsetAngle);

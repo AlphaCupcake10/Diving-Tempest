@@ -49,9 +49,9 @@ MonoBehaviour:
   Music: {fileID: -6429526418872251395, guid: 052644a44ca0d2347add2e7644ae3fef, type: 2}
   Effects: {fileID: -6889469242366054339, guid: 052644a44ca0d2347add2e7644ae3fef, type: 2}
   musicClips:
+  - {fileID: 8300000, guid: d2cf34590d0318144805e77d38286097, type: 3}
   - {fileID: 8300000, guid: cca6901934da09242b8952b6da1dd5fa, type: 3}
   - {fileID: 8300000, guid: 6dfce8154454b5a439beacd4f5c72d9a, type: 3}
-  - {fileID: 8300000, guid: d2cf34590d0318144805e77d38286097, type: 3}
 --- !u!82 &8059062698599950805
 AudioSource:
   m_ObjectHideFlags: 0
